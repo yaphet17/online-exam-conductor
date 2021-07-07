@@ -1,8 +1,9 @@
 <?php
+session_start();
 require_once('config.php');
 
 $conductorId='@Nemeraa';
-//$_GET['conductorId'];
+//$_SESSION['conductorId'];
 
 /*if(!isset($_SESSION['uname'])){
   header('Location: admin-login.php');

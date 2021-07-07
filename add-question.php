@@ -1,13 +1,24 @@
 <?php
+session_start();
 require_once('config.php');
 
-$examId=$_GET['examId'];
+//Copy url value
+if(isset($_GET['examId'])){
+  $examId=$_GET['examId'];
+}else{
+  //Alternate option if a page is refreshed by submit button
+  if(isset($_POST['examId'])){
+    $examId=$_POST['examId'];
+  }else{
+    die('exam id not found');
+  }
+}
+
 
 if(isset($_POST['add'])){
   $tqQuery="SELECT totalQuestion FROM examination WHERE examId=".$examId;
   $tqResult=mysqli_query($con,$tqQuery) or die('Error to send query');
   if($tqRow=mysqli_fetch_assoc($tqResult)){
-
   for($j=1;$j<=$tqRow['totalQuestion'];$j++){
   $qt="questionTitle".$j;
   $op="answerOption".$j;
@@ -93,6 +104,7 @@ if(isset($_POST['add'])){
 <head></head>
 <body>
 <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
+  <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
   <?php
   //Get total question
   $tqQuery="SELECT totalQuestion FROM examination WHERE examId=".$examId;

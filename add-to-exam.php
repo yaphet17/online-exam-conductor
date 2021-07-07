@@ -2,16 +2,16 @@
 session_start();
 require_once('config.php');
 
-//Store exam id in session storage to prevent value lost when the refreshed
+//Copy url value
 if(isset($_GET['examId'])){
   $examId=$_GET['examId'];
 }else{
+  //Alternate option if a page is refreshed by submit button
   if(isset($_POST['examId'])){
     $examId=$_POST['examId'];
   }else{
     die('exam id not found');
   }
-
 }
 
 //Add all student with in a section to exam
@@ -49,7 +49,7 @@ if(isset($_POST['addCandidate'])){
 <body>
   <p>Add by individual section</p>
   <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
-    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo $_GET['examId'];}?>">
+    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
     <lable>Section<select name="sectionFilter1">
                     <option value='all' selected>All</option>
                     <?php
@@ -83,7 +83,7 @@ if(isset($_POST['addCandidate'])){
                     <input type='submit' name='filter1' value='Filter'>
                   </form>
   <form action="<?=$_SERVER['PHP_SELF']?>" method='POST'>
-    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo $_GET['examId'];}?>">
+    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
     <table>
       <th></th>
       <th>Section Name</th>
@@ -130,7 +130,7 @@ if(isset($_POST['addCandidate'])){
   <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo $_GET['examId'];}?>">
     <p>Add individual candidate</p>
       <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
-        <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo $_GET['examId'];}?>">
+        <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
         <lable>Section<select name="sectionFilter">
                         <option value='all' selected>All</option>
                         <?php
@@ -164,7 +164,7 @@ if(isset($_POST['addCandidate'])){
                         <input type='submit' name='filter2' value='Filter'>
       </form>
     <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
-    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo $_GET['examId'];}?>">
+    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
       <table>
         <th></th>
         <th>First Name</th>
