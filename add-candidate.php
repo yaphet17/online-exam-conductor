@@ -122,7 +122,7 @@ function getPath(){
         if($row['academicYear']==='1'){
           $str="st Year";
         }else if($row['academicYear']==='2'){
-          $str="2nd Year";
+          $str="nd Year";
         }else if($row['academicYear']==='3'){
           $str="rd Year";
         }else{

@@ -53,11 +53,6 @@ if(isset($_POST['create'])){
 <!doctype html>
 <html>
 <head>
-<style type='css'>
-  input[type=time]::-webkit-datetime-edit-ampm-field {
-  display: none;
-  }
-</style>
 </head>
 <body>
   <form action="<?=$_SERVER['PHP_SELF']?>" method='POST'>
@@ -72,14 +67,13 @@ if(isset($_POST['create'])){
   <p>Exams</p>
   <table>
     <th>Title</th>
-    <th>Add</th>
+    <th colspan="2"></th>
   <?php
     $idQuery="SELECT * FROM examination";
     $idResult=mysqli_query($con,$idQuery) or die('Error to send query');
     while($idRow=mysqli_fetch_assoc($idResult)){
-      echo "<tr><td>".$idRow['examTitle']."</td><td><a href='add-question.php?examId=".$idRow['examId']."'>Add question</a></td></tr>";
+      echo "<tr><td>".$idRow['examTitle']."</td><td><a href='add-question.php?examId=".$idRow['examId']."'>Add question</a> <a href='add-to-exam.php?examId=".$idRow['examId']."'>Add candidate</a></td></tr>";
     }
   ?>
-</br><a href="add-question.php?examId=">Add question</a>
 </body>
 </html>
