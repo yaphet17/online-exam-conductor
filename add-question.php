@@ -57,8 +57,8 @@ if(isset($_POST['add'])){
       }else{
           echo "<p>Failed to add  option 2</p>";
       }
-      if(isset($_POST['option3'])){
-          $ot="option3-".$j;
+      $ot="option3-".$j;
+      if(!empty($_POST[$ot])){
           $optionTitle=$_POST[$ot];
           $optionTitle=stripcslashes($optionTitle);
           $query="INSERT INTO option (".$columns.") VALUES(".$row['qi'].",3,'".$optionTitle."')";
@@ -68,8 +68,8 @@ if(isset($_POST['add'])){
             echo "<p>Failed to add  option 3</p>";
           }
       }
-      if(isset($_POST['option4'])){
-          $ot="option4-".$j;
+      $ot="option4-".$j;
+      if(!empty($_POST[$ot])){
           $optionTitle=$_POST[$ot];
           $optionTitle=stripcslashes($optionTitle);
           $query="INSERT INTO option (".$columns.") VALUES(".$row['qi'].",4,'".$optionTitle."')";
@@ -79,8 +79,8 @@ if(isset($_POST['add'])){
             echo "<p>Failed to add  option 4</p>";
           }
       }
-      if(isset($_POST['option5'])){
-          $ot="option5".$j;
+      $ot="option5-".$j;
+      if(!empty($_POST[$ot])){
           $optionTitle=$_POST[$ot];
           $optionTitle=stripcslashes($optionTitle);
           $query="INSERT INTO option (".$columns.") VALUES(".$row['qi'].",5,'".$optionTitle."')";

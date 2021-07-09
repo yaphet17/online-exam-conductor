@@ -14,7 +14,7 @@ if(isset($_GET['examId'])){
   }
 }
 
-$candidateId="yafet123";//$_SESSION['candidateId'];
+$candidateId="yaredabate";//$_SESSION['candidateId'];
 
 
 
@@ -31,9 +31,9 @@ if(isset($_POST['enroll'])){
     $checkResult=mysqli_query($con,$checkQuery) or die('Error to send query');
     $checkRow=mysqli_fetch_assoc($checkResult);
     if($checkRow['ei']===$examCode){
-      $updateQuery="UPDATE examenrollment SET attendanceStatus='attending'";
+      $updateQuery="UPDATE examenrollment SET attendanceStatus='attending' WHERE candidateId='".$candidateId."'";
       $updateResult=mysqli_query($con,$updateQuery) or die('Error to send query');
-      header("Location: exam.php");
+      header("Location: exam.php?examId=".$examId);
     }else{
       echo "Invalid exam code";
     }
