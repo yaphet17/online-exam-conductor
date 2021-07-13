@@ -27,18 +27,32 @@ if(isset($_POST['enroll'])){
   $query="SELECT COUNT(ee.candidateId) AS ci FROM examination e,examenrollment ee WHERE e.examId=ee.examId and ee.candidateId='".$candidateId."'";
   $result=mysqli_query($con,$query) or die('Error to send query');
   if(mysqli_num_rows($result)!=0){
-    $checkQuery="SELECT examCode AS ei FROM examination WHERE examId='".$examId."' LIMIT 1";
-    $checkResult=mysqli_query($con,$checkQuery) or die('Error to send query');
-    $checkRow=mysqli_fetch_assoc($checkResult);
-    if($checkRow['ei']===$examCode){
-      $updateQuery="UPDATE examenrollment SET attendanceStatus='attending' WHERE candidateId='".$candidateId."'";
-      $updateResult=mysqli_query($con,$updateQuery) or die('Error to send query');
-      header("Location: exam.php?examId=".$examId);
+    $statusQuery="SELECT examStatus AS es FROM examination  WHERE examId=".$examId." LIMIT 1";
+    $statusResult=mysqli_query($con,$statusQuery) or die('Error to send query');
+    $statusRow=mysqli_fetch_assoc($statusResult);
+    if($statusRow['es']==="started"){
+      $checkQuery="SELECT examCode AS ei FROM examination WHERE examId='".$examId."' LIMIT 1";
+      $checkResult=mysqli_query($con,$checkQuery) or die('Error to send query');
+      $checkRow=mysqli_fetch_assoc($checkResult);
+      if($checkRow['ei']===$examCode){
+        $updateQuery="UPDATE examenrollment SET attendanceStatus='attending' WHERE candidateId='".$candidateId."'";
+        $updateResult=mysqli_query($con,$updateQuery) or die('Error to send query');
+        header("Location: exam.php?examId=".$examId);
+      }else{
+        echo "<p>Invalid exam code</p>";
+      }
     }else{
-      echo "Invalid exam code";
+      if($statusRow['es']==='created'){
+        echo "<p>The exam doesn't start yet</p>";
+      }else if($statusRow['es']==='canceled'){
+          echo "<p>The has been canceled</p>";
+      }else{
+        echo "<p>The exam has been completed</p>";
+      }
+
     }
   }else{
-    echo "You are not eligible to take the exam";
+    echo "<p>You are not eligible to take the exam</p>";
   }
 }
 ?>

@@ -43,7 +43,9 @@ for($j=1;$j<=$markRow['tq'];$j++){
   $answerQuery="INSERT INTO answer (examid,candidateId,questionId,answerOPtion,status) VALUES(".$examId.",'".$candidateId."',".$questionId.",'".$option."','".$status."')";
   mysqli_query($con,$answerQuery) or die('Error to send query');
 }
-header("Location: exam-result.php?examId=".$examId);
+$statusQuery="UPDATE examenrollment SET attendanceStatus='attended' WHERE candidateId='".$candidateId."' AND examId=".$examId;
+mysqli_query($con,$statusQuery) or die('Error to send query');
+header("Location: exam-result-candidate.php?examId=".$examId);
 }else{
   die('You have already submitted your answer');
 }
