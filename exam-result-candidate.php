@@ -1,9 +1,14 @@
 <?php
 session_start();
-require_once('config.php');
+require('config.php');
 
 $candidateId="yaredabate";//$_SESSION['candidateId'];
-$examId=$_GET['examId'];
+if(isset($_GET['examId']) and !empty($_GET['examId'])){
+  $examId=htmlentities($_GET['examId']);
+}else{
+  die('exam id not found');
+}
+
 ?>
 <!DOCTYPE html>
 <html>

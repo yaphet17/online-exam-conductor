@@ -1,5 +1,5 @@
 <?php
-require_once('config.php');
+require('config.php');
 
 
 /*if(!isset($_SESSION['uname'])){
