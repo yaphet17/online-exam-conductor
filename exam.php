@@ -1,14 +1,23 @@
 <?php
 session_start();
-require_once('config.php');
+require('config.php');
+
+if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
+      session_destroy();
+      header('Location: index.php');
+}else{
+  if($_SESSION['level']!='a8226c2'){
+    session_destroy();
+    header('Location: index.php');
+  }
+}
 
 $candidateId="yaredabate";//$_SESSION['candidateId'];
 
 //Copy url value
 if(isset($_GET['examId'])){
-  $examId=htmlspecialchars($_GET['examId']);
-}else{
-  //Alternate option if a page is refreshed by submit button
+  $examId=htmlentities($_GET['examId']);
+}else{ //Alternate option if a page is refreshed by submit button
   if(isset($_POST['examId'])){
     $examId=$_POST['examId'];
   }else{
