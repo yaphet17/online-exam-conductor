@@ -2,9 +2,10 @@
 session_start();
 require('../config.php');
 
-$conductorId='@Nemeraa';//$_SESSION['conductorId'];
 
-if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
+$conductorId=$_SESSION['conductorId'];
+$pass=$_SESSION['pass'];
+if(!isset($conductorId) or !isset($pass) or !isset($_SESSION['level']) or empty($conductorId) or empty($pass) or empty($_SESSION['level'])){
       session_destroy();
       header('Location: index.php');
 }else{
@@ -14,16 +15,6 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
   }
 }
 
-$query="SELECT username,password FROM administrator WHERE username='".$_SESSION['uname']."' LIMIT 1";
-$result=mysqli_query($con,$query) or die("Can't execute query");
-if($row=mysqli_fetch_assoc($result)){
-  if(!password_verify($_SESSION['password'],$row['password'])){
-      session_destroy();
-    die("Not authorized");
-  }
-}else{
-  die('fatech failed');
-}
 
 //Submitting user input
 if(isset($_POST['create'])){

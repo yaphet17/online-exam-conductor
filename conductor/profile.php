@@ -2,25 +2,18 @@
 session_start();
 require('../config.php');
 
-if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
+$conductorId=$_SESSION['conductorId'];
+$pass=$_SESSION['pass'];
+if(!isset($conductorId) or !isset($pass) or !isset($_SESSION['level']) or empty($conductorId) or empty($pass) or empty($_SESSION['level'])){
       session_destroy();
       header('Location: index.php');
 }else{
-  if($_SESSION['level']!='b893e95'){
+  if($_SESSION['level']!='26c2b89'){
     session_destroy();
     header('Location: index.php');
   }
 }
 
-if(isset($_GET['conductorId'])){
-  if(!empty($_GET['conductorId'])){
-    $conductorId=htmlentities($_GET['conductorId']);
-  }else{
-    die('conductor id not found');
-  }
-}else{
-  die('conductor id not found');
-}
 
 //Fetching conductor's information from db
 $query="SELECT* FROM conductor WHERE username='".$conductorId."'";
@@ -77,14 +70,15 @@ $status=$row['verificationStatus'];
                 <li><a href="dashboard.php"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
                 <li><a href="exam-list.php"><i class="fa fa-list-ul"></i><span>Examinations</span></a></li>
                 <li><a href="candidate-list.php"><i class="fa fa-list-ul"></i><span>Candidates</span></a></li>
-                <li class="active"><a href="conductor-list.php"><i class="fa fa-list-ul"></i><span>Conductors</span></a></li>
-                <li>
-                    <a href="javascript:void(0)" class="has-arrow arrow-c"><i class="fa fa-lock"></i><span>Authentication</span></a>
+                <li class='active'>
+                    <a href="javascript:void(0)" class="has-arrow arrow-c"><i class="fa fa-lock"></i><span>Profile</span></a>
                     <ul>
-                        <li><a href="change-password.php">Change Password</a></li>
+                        <li class='active'><a href="profile.php">Profile information</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="change-password.php">Change password</a></li>
                     </ul>
                 </li>
-
             </ul>
         </nav>
     </div>
@@ -137,45 +131,6 @@ $status=$row['verificationStatus'];
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="table-responsive">
-                            <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
-                                  <thead>
-                                    <tr>
-                                      <th colspan='6'>Exams conducted</th>
-                                    </tr>
-                                    <tr>
-                                      <th>Exam Title</th>
-                                      <th>Creation Date</th>
-                                      <th>Starting Time</th>
-                                      <th>Duration</th>
-                                      <th>Status</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                       <?php
-                                       $examQuery="SELECT examId,examTitle,examCreationDate,examDateTime,examDuration,examStatus FROM examination WHERE conductorId='".$conductorId."'";
-                                       $examResult=mysqli_query($con,$examQuery) or die('Error to send query');
-                                       if(mysqli_num_rows($examResult)){
-                                         while($examRow=mysqli_fetch_assoc($examResult)){
-                                           echo "<tr><td><a href='exam-detail.php?examId=".$examRow['examId']."'>".$examRow['examTitle']."</a></td>
-                                                 <td><span>".$examRow['examCreationDate']."</span></td>
-                                                 <td><span>".$examRow['examDateTime']."</span></td>
-                                                 <td><span>".$examRow['examDuration']."</span></td>
-                                                 <td><span class='tag tag-default'>".$examRow['examStatus']."</span></td></tr>";
-                                         }
-                                       }else{
-                                         echo "<tr><td colspan='5'>No exam found.</td></tr>";
-
-                                       }
-                                       ?>
-                               </tbody>
-                               </table>
-                            </div>
-                        </div>
-
                     </div>
 
                 </div>

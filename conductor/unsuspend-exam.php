@@ -13,7 +13,7 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
 }
 
 if(!empty($_GET['examId'])){
-  $examId=$_GET['examId'];
+  $examId=htmlentities($_GET['examId']);
 }else{
   die("exam id not found");
 }

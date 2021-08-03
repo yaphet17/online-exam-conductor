@@ -2,7 +2,9 @@
 session_start();
 require('../config.php');
 
-if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
+$conductorId=$_SESSION['conductorId'];
+$pass=$_SESSION['pass'];
+if(!isset($conductorId) or !isset($pass) or !isset($_SESSION['level']) or empty($conductorId) or empty($pass) or empty($_SESSION['level'])){
       session_destroy();
       header('Location: index.php');
 }else{
@@ -12,9 +14,10 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
   }
 }
 
+
 //Copy url value
 if(isset($_GET['examId'])){
-  $examId=$_GET['examId'];
+  $examId=htmlentities($_GET['examId']);
 }else{
   //Alternate option if a page is refreshed by submit button
   if(isset($_POST['examId'])){
@@ -49,7 +52,7 @@ if(isset($_POST['addSection'])){
 
 //Add all selected candidates to exam
 if(isset($_POST['addCandidate'])){
-  $getQuery="SELECT candidateId AS ci FROM candidate";
+  $getQuery="SELECT candidateId AS ci,firstName,lastName,email FROM candidate";
   $getResult=mysqli_query($con,$getQuery);
   while($getRow=mysqli_fetch_assoc($getResult)){
     if(isset($_POST[$getRow['ci']])){
@@ -59,6 +62,21 @@ if(isset($_POST['addCandidate'])){
       if($checkRow['n']==0){
         $insertQuery="INSERT INTO examenrollment (candidateId,examId,attendanceStatus) VALUES('".$getRow['ci']."',".$examId.",'notattended')";
         mysqli_query($con,$insertQuery) or die('Error to send query');
+        $emailQuery="SELECT examTitle,examDateTime,examCode FROM examination WHERE examId='".$examId."' LIMIT 1";
+        $emailResult=mysqli_query($con,$emailQuery) or die('Error to send query');
+        $emailRow=mysqli_fetch_assoc($emailResult) or die('Error to fetch query');
+        $eName=$emailRow['examTitle'];
+        $eDateTime=$emailRow['examDateTime'];
+        $eCode=$emailRow['examCode'];
+        $cName=$getRow['firstName']." ".$getRow['lastName'];
+        $to=$getRow['email'];
+        $subject="Exam Notification";
+        $msg="Dear ".$cName." you are added to exam ".$eName." that will be held on ".$eDateTime." below is your exam code\nExam Code=".$eCode;
+        if(mail($to,$subject,$msg)){
+            //Email sucessful
+        }else{
+          die('email sending failed');
+        }
       }else{
         die('Already enrolled');
       }
@@ -66,185 +84,216 @@ if(isset($_POST['addCandidate'])){
     }
   }
 }
+//Redirect to exam list page
+if(isset($_POST['done'])){
+  header('Location: exam-list.php');
+}
 
 ?>
-<!DOCTYPE html>
-<html>
-<head></head>
-<body>
-  <p>Add by individual section</p>
-  <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
-    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
-    <lable>Section<select name="sectionFilter1">
-                    <option value='all' selected>All</option>
-                    <?php
-                      //Get maximum section number from db
-                      $checkSecQuery="SELECT MAX(sectionName) AS maxS FROM section LIMIT 1";
-                      $checkSecResult=mysqli_query($con,$checkSecQuery) or die('Error to send query');
-                      $checkSecRow=mysqli_fetch_assoc($checkSecResult);
-                      $maxSL=explode(' ',$checkSecRow['maxS']);
-                      $maxS=end($maxSL);
-                      for($i=1;$i<=$maxS;$i++){
-                        echo "<option value='section ".$i."'>".$i."</option>";
-                      }
-                      echo "</select></label><label>Academic Year<select name='academicYear1'>
-                        <option value='all'>All</option>
-                        <option value='1'>1st Year</option>
-                        <option value='2'>2nd Year</option>
-                        <option value='3'>3rd Year</option>
-                        <option value='4'>4th Year</option>
-                        <option value='5'>5th Year</option>
-                      </select></label>";
-                      //Get all department from db
-                      $dQuery="SELECT department AS d FROM section GROUP BY department";
-                      $dResult=mysqli_query($con,$dQuery) or die('Error to send query');
-                      echo "<lable> Department<select name='department1'><option value='all' selected>All</option>";
-                      while($dRow=mysqli_fetch_assoc($dResult)){
-                        echo "<option value='".$dRow['d']."'>".$dRow['d']."</option>";
-                      }
-                      echo "</select></label>";
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-                    ?>
-                    <input type='submit' name='filter1' value='Filter'>
-                  </form>
-  <form action="<?=$_SERVER['PHP_SELF']?>" method='POST'>
-    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
-    <table>
-      <th></th>
-      <th>Section Name</th>
-      <th>Academic Year</th>
-      <th>Department</th>
-    <?php
-    $sectionQuery="SELECT * FROM section ORDER BY academicYear,sectionName,department";
-    if(isset($_POST['filter1'])){
-      $sectionFilter1=$_POST['sectionFilter1'];
-      $academicYear1=$_POST['academicYear1'];
-      $department1=$_POST['department1'];
-      if($sectionFilter1!="all" and $academicYear1!="all" and   $department1!="all"){
-        $sectionQuery="SELECT * FROM section WHERE sectionName='".$sectionFilter1."' AND academicYear=".$academicYear1." AND department='".$department1."' ORDER BY academicYear,sectionName,department";
-      }else if($sectionFilter1!="all" and $academicYear1==="all" and $department1==="all"){
-          $sectionQuery="SELECT * FROM section WHERE sectionName='".$sectionFilter1."' ORDER BY academicYear,sectionName,department";
-      }else if($sectionFilter1==="all" and $academicYear1!="all" and $department1==="all"){
-          $sectionQuery="SELECT * FROM section WHERE academicYear=".$academicYear1." ORDER BY academicYear,sectionName,department";
-      }else if($sectionFilter1==="all" and $academicYear1==="all" and $department1!="all"){
-          $sectionQuery="SELECT * FROM section WHERE department='".$department1."' ORDER BY academicYear,sectionName,department";
-      }else if($sectionFilter1!="all" and $academicYear1!="all" and $department1==="all"){
-          $sectionQuery="SELECT * FROM section WHERE sectionName='".$sectionFilter1."' AND academicYear=".$academicYear1." ORDER BY academicYear,sectionName,department";
-      }else if($sectionFilter1!="all" and $academicYear1==="all" and $department1!="all"){
-          $sectionQuery="SELECT * FROM section WHERE sectionName='".$sectionFilter1."' AND department='".$department1."' ORDER BY academicYear,sectionName,department";
-      }else if($sectionFilter1==="all" and $academicYear1!="all" and $department1!="all"){
-          $sectionQuery="SELECT * FROM section WHERE academicYear=".$academicYear1." AND department='".$department1."' ORDER BY academicYear,sectionName,department";
-      }
+<title>ONEC</title>
 
-    }
-    $sectionResult=mysqli_query($con,$sectionQuery) or die('Error to send query');
-    //Check if any candidate matches the filter
-    if(mysqli_num_rows($sectionResult)===0){
-      echo "<tr><td colspan='6' style='text-align:center;'>No match found</td></tr>";
-    }else{
-      $i=0;
-      while($sectionRow=mysqli_fetch_assoc($sectionResult)){
-        echo "<tr><td><input type='checkbox' id='".$i."' name='".$sectionRow['sectionId']."'></td><td><label for='".$i."'>".$sectionRow['sectionName']."</label></td><td><label for='".$i."'>".$sectionRow['academicYear']."</label></td><td><label for='".$i."'>".$sectionRow['department']."</label></td<tr>";
-        $i++;
-      }
-    }
-    ?>
-  </table></br>
-  <input type='submit' name='addSection' value='Add Section'>
-  </form>
-  <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo $_GET['examId'];}?>">
-    <p>Add individual candidate</p>
-      <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
-        <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
-        <lable>Section<select name="sectionFilter">
-                        <option value='all' selected>All</option>
-                        <?php
-                          //Get maximum section number from db
-                          $checkSecQuery="SELECT MAX(sectionName) AS maxS FROM section LIMIT 1";
-                          $checkSecResult=mysqli_query($con,$checkSecQuery) or die('Error to send query');
-                          $checkSecRow=mysqli_fetch_assoc($checkSecResult);
-                          $maxSL=explode(' ',$checkSecRow['maxS']);
-                          $maxS=end($maxSL);
-                          for($i=1;$i<=$maxS;$i++){
-                            echo "<option value='section ".$i."'>".$i."</option>";
-                          }
-                          echo "</select></label><label>Academic Year<select name='academicYear'>
-                            <option value='all'>All</option>
-                            <option value='1'>1st Year</option>
-                            <option value='2'>2nd Year</option>
-                            <option value='3'>3rd Year</option>
-                            <option value='4'>4th Year</option>
-                            <option value='5'>5th Year</option>
-                          </select></label>";
-                          //Get all department from db
-                          $dQuery="SELECT department AS d FROM section GROUP BY department";
-                          $dResult=mysqli_query($con,$dQuery) or die('Error to send query');
-                          echo "<lable> Department<select name='department'><option value='all' selected>All</option>";
-                          while($dRow=mysqli_fetch_assoc($dResult)){
-                            echo "<option value='".$dRow['d']."'>".$dRow['d']."</option>";
-                          }
-                          echo "</select></label>";
+<!-- Bootstrap Core and vandor -->
+<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-                        ?>
-                        <input type='submit' name='filter2' value='Filter'>
-      </form>
-    <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
-    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlspecialchars($_GET['examId']);}?>">
-      <table>
-        <th></th>
-        <th>First Name</th>
-        <th>Last name</th>
-        <th>Sex</th>
-        <th>Academic Year</th>
-        <th>Department</th>
-        <th>Section</th>
-        <?php
-          //Adding all candidate to the table
-          $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId ORDER BY s.academicYear,s.sectionName,s.department,c.firstName,c.lastName";
-          //Filter candidates
-          if(isset($_POST['filter2'])){
-            if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
-            }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']==="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' ORDER BY s.academicYear,s.sectionName,s.department";
-            }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
-            }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
-            }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
-            }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
-            }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
-                $candListQuery="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
-            }
+<!-- Plugins css -->
+<link rel="stylesheet" href="../assets/plugins/charts-c3/c3.min.css"/>
 
-          }
-          $candListResult=mysqli_query($con,$candListQuery) or die('Error to send query');
-          //Check if any candidate matches the filter
-          if(mysqli_num_rows($candListResult)===0){
-            echo "<tr><td colspan='6' style='text-align:center;'>No match found</td></tr>";
-          }else{
-            $j=-1;
-            //List all candidate qualifies the filter
-            while($candListRow=mysqli_fetch_assoc($candListResult)){
-              echo "<tr>
-                <td><input type='checkbox' id='".$j."' name='".$candListRow['ci']."'></td>
-                <td><label for='".$j."'>".$candListRow['fname']."</label></td>
-                <td><label for='".$j."'>".$candListRow['lname']."</label></td>
-                <td><label for='".$j."'>".$candListRow['sx']."</label></td>
-                <td><label for='".$j."'>".$candListRow['year']."</label></td>
-                <td><label for='".$j."'>".$candListRow['depart']."</label></td>
-                <td><label for='".$j."'>".$candListRow['section']."</label></td>
-              </tr>";
-              $j--;
-            }
-          }
+<!-- Core css -->
+<link rel="stylesheet" href="../assets/css/main.css"/>
+<link rel="stylesheet" href="../assets/css/theme1.css"/>
+</head>
+
+<body class="font-montserrat">
+<!-- Page Loader -->
+<div class="page-loader-wrapper">
+    <div class="loader">
+    </div>
+</div>
+
+<div id="main_content">
+
+    <div class="page" style='margin:0;left:0;right:0;width:100%;'>
+        <div id="page_top" class="section-body top_dark">
+            <div class="container-fluid">
+                <div class="page-header">
+                    <div class="left">
+                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
+                        <h1 class="page-title">Add candidates to exam</h1>
+                    </div>
+                    <div class="right">
+
+                        <div class="notification d-flex">
+                            <div class="dropdown d-flex">
+                                <a class="nav-link icon d-none d-md-flex btn btn-default btn-icon ml-2" data-toggle="dropdown"><i class="fa fa-user"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                    <a class="dropdown-item" href="logout.php"><i class="dropdown-icon fa fa-sign-out"></i> Sign out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="section-body mt-3">
+            <div class="container-fluid">
+
+                  <div class="tab-content">
+                  <div class="tab-pane fade show active" id="todo-list" role="tabpanel">
+                  <form action="<?=$_SERVER['PHP_SELF']?>" method="POST">
+                    <input type='hidden' name='examId' value="<?php if(!empty($_GET['examId'])){echo htmlentities($_GET['examId']);}?>">
+                    <div class="row">
+                      <div class="col-lg-2 col-md-4 col-sm-6">
+
+                          <div class="input-group">
+                                    <select name="sectionFilter" class="form-control show-tick">
+                                        <option value='all' selected hidden>Section</option>
+                                        <?php
+                                          //Get maximum section number from db
+                                          $checkSecQuery="SELECT MAX(sectionName) AS maxS FROM section LIMIT 1";
+                                          $checkSecResult=mysqli_query($con,$checkSecQuery) or die('Error to send query');
+                                          $checkSecRow=mysqli_fetch_assoc($checkSecResult);
+                                          $maxSL=explode(' ',$checkSecRow['maxS']);
+                                          $maxS=end($maxSL);
+                                          for($i=1;$i<=$maxS;$i++){
+                                            echo "<option value='section ".$i."'>".$i."</option>";
+                                          }
+                                          ?>
+                                    </select>
+                          </div>
+                      </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <div class="input-group">
+                                      <select name='academicYear' class="form-control show-tick">
+                                          <option value='all' selected hidden>AcademicYear</option>
+                                          <option value='1'>1st Year</option>
+                                          <option value='2'>2nd Year</option>
+                                          <option value='3'>3rd Year</option>
+                                          <option value='4'>4th Year</option>
+                                          <option value='5'>5th Year</option>
+                                      </select>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+
+                            <div class="input-group">
+                                      <select name='department' class="form-control show-tick">
+                                          <option selected hidden value='all'>Department</option>
+                                        <?php
+                                        //Get all department from db
+                                        $dQuery="SELECT department AS d FROM section GROUP BY department";
+                                        $dResult=mysqli_query($con,$dQuery) or die('Error to send query');
+                                        while($dRow=mysqli_fetch_assoc($dResult)){
+                                          echo "<option value='".$dRow['d']."'>".$dRow['d']."</option>";
+                                        }
+                                        ?>
+                                      </select>
+                            </div>
+                        </div>
 
 
-        ?>
-      </table>
-      <input type="submit" name="addCandidate" value="Add Candidate">
-    </form>
+                        <div class="col-lg-2 col-md-4 col-sm-6">
+                            <input type='submit' class="btn btn-primary btn-block"  name='filter' value='Filter'>
+                        </div>
+                    </div>
+                </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Sex</th>
+                                    <th>Section</th>
+                                    <th>Academic Year</th>
+                                    <th>Department</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              <?php
+                              $rows="c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,s.sectionName AS section,s.academicYear AS year,s.department AS depart ";
+                              $query="SELECT ".$rows." FROM section s,candidate c  WHERE c.sectionId=s.sectionId";
+                              //Filter candidates
+                              if(isset($_POST['filter'])){
+                                if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
+                                    $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']==="all"){
+                                    $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
+                                    $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
+                                }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
+                                    $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
+                                  $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
+                                }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
+                                  $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
+                                    $query="SELECT ".$rows." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                }
+                              }
+
+                              $result=mysqli_query($con,$query) or die('Error to send query');
+                              if(mysqli_num_rows($result)!=0){
+                              while($row=mysqli_fetch_assoc($result)){
+                                $candidateId=$row['ci'];
+                                if($row['sx']=='m'){
+                                  $sex='Male';
+                                }else{
+                                  $sex='Female';
+                                }
+
+                                echo "<tr><td><label class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input' name='".$candidateId."'><span class='custom-control-label'>&nbsp;</span></label></td>
+                                          <td><a href='candidate-detail.php?candidateId=".$candidateId."'>".$row['fname']." ".$row['lname']."</a></td>
+                                          <td><span>".$sex."</span></td>
+                                          <td><span>".$row['section']."</span></td>
+                                          <td><span>".$row['year']."</span></td>
+                                          <td><span>".$row['depart']."</span></td>
+                                          <td><span>".$row['email']."</span></td></tr>";
+                              }
+                            }else{
+                              echo "<tr><td colspan='9' style='text-align:center;'>No candidate found</td></tr>";
+                            }
+                              ?>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="card" style='margin-top:20px;'>
+                      <div class="form-group row">
+                          <div class="col-md-7">
+                              <button type="submit" id='markAll'class="btn btn-primary">Mark all</button>
+                              <button type="submit" name='addCandidate' class="btn btn-primary">Add</button>
+                                <button type="submit" name='done' class="btn btn-primary">Done</button>
+                          </div>
+                      </div>
+                      </div>
+                    </form>
+                </div>
+
+                </div>
+
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+<script src="../assets/bundles/counterup.bundle.js"></script>
+<script src="../assets/bundles/knobjs.bundle.js"></script>
+<script src="../assets/bundles/c3.bundle.js"></script>
+<script src="../assets/js/core.js"></script>
+<script src="../assets/js/page/project-index.js"></script>
 </body>
 </html>

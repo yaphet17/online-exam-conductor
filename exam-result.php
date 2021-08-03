@@ -12,7 +12,7 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
   }
 }
 
-$candidateId="yaredabate";//$_SESSION['candidateId'];
+$candidateId=$_SESSION['uname'];
 if(isset($_GET['examId']) and !empty($_GET['examId'])){
   $examId=htmlentities($_GET['examId']);
 }else{
@@ -38,8 +38,8 @@ if(isset($_GET['examId']) and !empty($_GET['examId'])){
     $optionQuery="SELECT * FROM option WHERE questionId=".$questionRow['questionId']." ORDER BY optionNumber";
     $optionResult=mysqli_query($con,$optionQuery) or die('Error to send query');
     $answerQuery="SELECT answerOption AS ao,status AS ast FROM answer WHERE examId=".$examId."  AND candidateId='".$candidateId."' AND questionId=".$questionRow['questionId']." LIMIT 1";
-    $answerResult=mysqli_query($con,$answerQuery) or die('Error to send querrry');
-    $answerRow=mysqli_fetch_assoc($answerResult);
+    $answerResult=mysqli_query($con,$answerQuery) or die('Error to send query');
+    $answerRow=mysqli_fetch_assoc($answerResult) or die('Error to fetch query');
     $correctAQuery="SELECT answerOption AS ao FROM question WHERE questionId=".$questionRow['questionId']." LIMIT 1";
     $correctAResult=mysqli_query($con,$correctAQuery) or die('Error to send query');
     $correctARow=mysqli_fetch_assoc($correctAResult);

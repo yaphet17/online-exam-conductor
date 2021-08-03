@@ -12,7 +12,7 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
   }
 }
 
-$candidateId="yaredabate";//$_SESSION['candidateId'];
+$candidateId=$_SESSION['uname'];
 
 //Copy url value
 if(isset($_GET['examId'])){
@@ -50,11 +50,11 @@ for($j=1;$j<=$markRow['tq'];$j++){
     $status="wrong";
   }
   $answerQuery="INSERT INTO answer (examid,candidateId,questionId,answerOPtion,status) VALUES(".$examId.",'".$candidateId."',".$questionId.",'".$option."','".$status."')";
-  mysqli_query($con,$answerQuery) or die('Error to send query');
+  mysqli_query($con,$answerQuery) or die('Error to send querry');
 }
 $statusQuery="UPDATE examenrollment SET attendanceStatus='attended' WHERE candidateId='".$candidateId."' AND examId=".$examId;
 mysqli_query($con,$statusQuery) or die('Error to send query');
-header("Location: exam-result-candidate.php?examId=".$examId);
+header("Location: exam-result.php?examId=".$examId);
 }else{
   die('You have already submitted your answer');
 }

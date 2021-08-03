@@ -2,7 +2,9 @@
 session_start();
 require('../config.php');
 
-if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
+$conductorId=$_SESSION['conductorId'];
+$pass=$_SESSION['pass'];
+if(!isset($conductorId) or !isset($pass) or !isset($_SESSION['level']) or empty($conductorId) or empty($pass) or empty($_SESSION['level'])){
       session_destroy();
       header('Location: index.php');
 }else{
@@ -13,10 +15,11 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
 }
 
 if(!empty($_GET['examId'])){
-  $examId=$_GET['examId'];
+  $examId=htmlentities($_GET['examId']);
 }else{
   die("exam id not found");
 }
+
 $query="UPDATE examination SET examStatus='started' WHERE examId=".$examId;
 if(mysqli_query($con,$query)){
   header('Location: exam-list.php');

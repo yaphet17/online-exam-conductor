@@ -31,9 +31,6 @@ require('config.php');
 <div class="auth">
     <div class="auth_left">
         <div class="card">
-            <div class="text-center mb-2">
-                <a class="header-brand" href="index-2.html"><img src='passport.png'></a>
-            </div>
             <div class="card-body">
                 <div class="card-title">Login to your account</div>
                 <div class="form-group">

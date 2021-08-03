@@ -2,7 +2,9 @@
 session_start();
 require('../config.php');
 
-if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
+$conductorId=$_SESSION['conductorId'];
+$pass=$_SESSION['pass'];
+if(!isset($conductorId) or !isset($pass) or !isset($_SESSION['level']) or empty($conductorId) or empty($pass) or empty($_SESSION['level'])){
       session_destroy();
       header('Location: index.php');
 }else{
@@ -12,17 +14,15 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
   }
 }
 
-$uname="@Nemeraa";//$_SESSION['username'];
-
 if(isset($_POST['verify'])){
-  $verifyQuery="SELECT verificationCode AS vc,verificationStatus AS vs FROM conductor WHERE username='".$uname."' LIMIT 1";
+  $verifyQuery="SELECT verificationCode AS vc,verificationStatus AS vs FROM conductor WHERE username='".$conductorId."' LIMIT 1";
   $verifyResult=mysqli_query($con,$verifyQuery) or die('Error to send query');
   $verifyRow=mysqli_fetch_assoc($verifyResult) or die('Error to fetch query');
   if($verifyRow['vs']==='verified'){
     die('Your account is already verified');
   }else{
     if($verifyRow['vc']===$_POST['vcode']){
-      $statusQuery="UPDATE conductor SET verificationStatus='verified' WHERE username='".$uname."'";
+      $statusQuery="UPDATE conductor SET verificationStatus='verified' WHERE username='".$conductorId."'";
       mysqli_query($con,$statusQuery) or die('Error to send query');
       echo "Succesfully verified";
     }else{

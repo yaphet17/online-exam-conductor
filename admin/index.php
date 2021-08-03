@@ -2,16 +2,6 @@
 session_start();
 require('../config.php');
 
-if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['level']) or empty($_SESSION['uname']) or empty($_SESSION['pass']) or empty($_SESSION['level'])){
-      session_destroy();
-      header('Location: index.php');
-}else{
-  if($_SESSION['level']!='b893e95'){
-    session_destroy();
-    header('Location: index.php');
-  }
-}
-
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
@@ -22,8 +12,7 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-<title>ONEC Login</title>
-
+<title>ONEC</title>
 <!-- Bootstrap Core and vandor -->
 <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -38,9 +27,6 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
 <div class="auth">
     <div class="auth_left">
         <div class="card">
-            <div class="text-center mb-2">
-                <a class="header-brand" href="index-2.html"><img src='passport.png'></a>
-            </div>
             <div class="card-body">
                 <div class="card-title">Login to your account</div>
                 <div class="form-group">

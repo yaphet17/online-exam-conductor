@@ -1,5 +1,5 @@
 <?php
-require('config.php');
+require('../config.php');
 ?>
 
 <!doctype html>
@@ -12,15 +12,15 @@ require('config.php');
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 
-<title>ONEC Forgot Password</title>
+<title>ONEC</title>
 
 <!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <!-- Core css -->
-<link rel="stylesheet" href="assets/css/main.css"/>
-<link rel="stylesheet" href="assets/css/theme1.css"/>
+<link rel="stylesheet" href="../assets/css/main.css"/>
+<link rel="stylesheet" href="../assets/css/theme1.css"/>
 
 
 </head>
@@ -46,22 +46,19 @@ require('config.php');
               <?php
               if(isset($_POST['send'])){
                 $email=$_POST['email'];
-
                 //Sanitize user input
                 $email=stripcslashes($email);
-                $query="SELECT firstName,lastName FROM  candidate WHERE email='".$email."' LIMIT 1;";
+                $query="SELECT COUNT(*) AS num FROM  administrator WHERE email='".$email."';";
                 $result=mysqli_query($con,$query) or die('Error to send query');
-                $row=mysqli_fetch_assoc($result)or die('Error to fetch query');
-                $numRows=mysqli_num_rows($result);
-                if($numRows===1){
-                  $name=$row['firstName']." ".$row['lastName'];
+                $row=mysqli_fetch_assoc($result) or die('Error to fetch query');
+                if($row['num']==1){
                   $newPass=bin2hex(openssl_random_pseudo_bytes(7));
                   $hashed=password_hash($newPass,PASSWORD_DEFAULT);
-                  $query2="UPDATE candidate SET password='".$hashed."'  WHERE email='".$email."'";
+                  $query2="UPDATE administrator SET password='".$hashed."'  WHERE email='".$email."'";
                   if(mysqli_query($con,$query2)){
                     $to=$email;
                     $subject="ONEC account password reset";
-                    $msg="Dear ".$name.",Your account password has been resetted\nHere is your new Password ".$newPass."\nPlease make sure to change your password immediatley!";
+                    $msg="Your account password has been resetted\nHere is your new Password ".$newPass."\nPlease make sure to change your password immediatley!";
                     if(mail($to,$subject,$msg)){
                       echo "<p style='color:green;'><i class='fa fa-check' style='font-size:24px;color:green;margin-right:5px;'></i>Email successfully sent!</p>";
                     }else{
@@ -83,8 +80,8 @@ require('config.php');
     <div class="auth_right full_img"></div>
 </div>
 
-<script src="assets/bundles/lib.vendor.bundle.js"></script>
-<script src="assets/js/core.js"></script>
+<script src="../assets/bundles/lib.vendor.bundle.js"></script>
+<script src="../assets/js/core.js"></script>
 </body>
 
 <!-- soccer/project/forgot-password.html  07 Jan 2020 03:42:43 GMT -->
