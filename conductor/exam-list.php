@@ -133,6 +133,14 @@ if(isset($_POST['create'])){
 <!-- Core css -->
 <link rel="stylesheet" href="../assets/css/main.css"/>
 <link rel="stylesheet" href="../assets/css/theme1.css"/>
+<style>
+.tag-default:hover{
+  cursor: pointer;
+}
+.select-cand:hover{
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body class="font-montserrat">
@@ -236,7 +244,6 @@ if(isset($_POST['create'])){
                                           <th>Creation Date</th>
                                           <th>Starting DateTime</th>
                                           <th>Duration</th>
-                                          <th>Exam Code</th>
                                           <th>Status</th>
                                           <th>Action</th>
                                         </tr>
@@ -247,13 +254,11 @@ if(isset($_POST['create'])){
                                       $examResult=mysqli_query($con,$examQuery) or die('Error to send query');
                                       $i=1;
                                       while($examRow=mysqli_fetch_assoc($examResult)){
-
                                         $examId=$examRow['examId'];
                                         $str1='#';
                                         $str2='#';
                                         $str3='#';
                                         $str4='#';
-
                                         $examId=$examRow['examId'];
                                         if($examRow['examStatus']==='created'){
                                           $str1="start-exam.php?examId=".$examId;
@@ -267,10 +272,10 @@ if(isset($_POST['create'])){
                                         }
 
                                         echo "<tr>
-                                              <td><input type='checkbox' id='".$i."' name='".$examId."'></td>
+                                              <td><input type='checkbox' class='select-cand'  id='".$i."' name='".$examId."'></td>
                                               <td><a href='exam-detail.php?examId=".$examRow['examId']."'>".$examRow['examTitle']."</td>
                                               <td><span>".$examRow['examCreationDate']."</td><td>".$examRow['examDateTime']."</span></td>
-                                              <td><span>".$examRow['examDuration']."</td><td>".$examRow['examCode']."</span></td>
+                                              <td><span>".$examRow['examDuration']."</td>
                                               <td><span>".$examRow['examStatus']."</span></td>
                                               <td><a href='".$str1."'><span class='tag tag-default' style='margin-right:5px;'>Start</span></a>
                                               <a href='".$str2."'><span class='tag tag-default' style='margin-right:5px;'>Suspend</span></a>

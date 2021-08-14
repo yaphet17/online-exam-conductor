@@ -62,18 +62,15 @@ if(isset($_POST['add'])){
     //Inserting user input to db
     $query="INSERT INTO candidate VALUES('".$id."','".$hashed."','".$fname."','".$lname."','".$sex."','".$cImage."','".$currDateTime."',".$section.",'".$email."','".$verificationCode."','unverified')";
     if(mysqli_query($con,$query)){
-      echo '<p>Succesfully added</p>';
         $to=$email;
         $subject="ONEC account username and password";
         $msg="Dear ".$fname." ".$lname." below is your username and password for your onec account\nUsername: ".$id."\nPassword: ".$pass."
               \nPlease change your password as soon as you logged in.";
         if(mail($to,$subject,$msg)){
-            die('email successfully sent');
         }else{
           die('email sending failed');
         }
     }else{
-        echo '<p>Succesfully failed</p>';
     }
   }else{
     echo "<p>User name already taken</p>";
@@ -130,6 +127,15 @@ function getPath(){
 <!-- Core css -->
 <link rel="stylesheet" href="../assets/css/main.css"/>
 <link rel="stylesheet" href="../assets/css/theme1.css"/>
+
+<style>
+.tag-default:hover{
+  cursor: pointer;
+}
+.select-cand:hover{
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body class="font-montserrat">
@@ -200,17 +206,57 @@ function getPath(){
                                 <div class="row">
                                     <div class="col-lg-2 col-md-4 col-sm-6">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Name">
+                                                  <select name="sectionFilter" class="form-control show-tick">
+                                                      <option value='all' selected hidden>Section</option>
+                                                      <?php
+                                                        //Get maximum section number from db
+                                                        $checkSecQuery="SELECT MAX(sectionName) AS maxS FROM section LIMIT 1";
+                                                        $checkSecResult=mysqli_query($con,$checkSecQuery) or die('Error to send query');
+                                                        $checkSecRow=mysqli_fetch_assoc($checkSecResult);
+                                                        $maxSL=explode(' ',$checkSecRow['maxS']);
+                                                        $maxS=end($maxSL);
+                                                        for($i=1;$i<=$maxS;$i++){
+                                                          echo "<option value='section ".$i."'>".$i."</option>";
+                                                        }
+                                                        ?>
+                                                  </select>
+
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Section">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <input type='submit' class="btn btn-primary btn-block"  name='search' value='Filter'>
-                                    </div>
+                                      <div class="col-lg-2 col-md-4 col-sm-6">
+                                          <div class="input-group">
+                                                    <select name='academicYear' class="form-control show-tick">
+                                                        <option value='all' selected hidden>AcademicYear</option>
+                                                        <option value='1'>1st Year</option>
+                                                        <option value='2'>2nd Year</option>
+                                                        <option value='3'>3rd Year</option>
+                                                        <option value='4'>4th Year</option>
+                                                        <option value='5'>5th Year</option>
+                                                    </select>
+
+                                          </div>
+                                      </div>
+                                      <div class="col-lg-2 col-md-4 col-sm-6">
+
+                                          <div class="input-group">
+                                                    <select name='department' class="form-control show-tick">
+                                                        <option selected hidden value='all'>Department</option>
+                                                      <?php
+                                                      //Get all department from db
+                                                      $dQuery="SELECT department AS d FROM section GROUP BY department";
+                                                      $dResult=mysqli_query($con,$dQuery) or die('Error to send query');
+                                                      while($dRow=mysqli_fetch_assoc($dResult)){
+                                                        echo "<option value='".$dRow['d']."'>".$dRow['d']."</option>";
+                                                      }
+                                                      ?>
+                                                    </select>
+                                          </div>
+                                      </div>
+
+
+                                      <div class="col-lg-2 col-md-4 col-sm-6">
+                                          <input type='submit' class="btn btn-primary btn-block"  name='filter' value='Filter'>
+                                      </div>
                                 </div>
                             </div>
                         </div>
@@ -234,23 +280,44 @@ function getPath(){
                                     </thead>
                                     <tbody>
                                       <?php
-                                      $query="SELECT * FROM candidate c,section s WHERE c.sectionId=s.sectionId";
+                                      $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c  WHERE c.sectionId=s.sectionId";
+                                      //Filter candidates
+                                      if(isset($_POST['filter'])){
+                                        if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
+                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']==="all"){
+                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
+                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
+                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
+                                          $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
+                                          $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
+                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                        }
+                                      }
+
                                       $result=mysqli_query($con,$query) or die('Error to send query');
                                       if(mysqli_num_rows($result)!=0){
                                       while($row=mysqli_fetch_assoc($result)){
-                                        $candidateId=$row['candidateId'];
-                                        if($row['sex']=='m'){
+                                        $candidateId=$row['ci'];
+                                        if($row['sx']=='m'){
                                           $sex='Male';
                                         }else{
                                           $sex='Female';
                                         }
-                                        echo "<tr><td><label class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input' name='".$candidateId."'><span class='custom-control-label'>&nbsp;</span></label></td>
-                                                  <td><a href='candidate-detail.php?candidateId=".$candidateId."'>".$row['firstName']." ".$row['lastName']."</a></td>
+
+                                        echo "<tr>
+                                              <td><label class='custom-control custom-checkbox select-cand'><input type='checkbox' class='custom-control-input' name='".$candidateId."'><span class='custom-control-label'>&nbsp;</span></label></td>
+                                                  <td><a href='candidate-detail.php?candidateId=".$candidateId."'>".$row['fname']." ".$row['lname']."</a></td>
                                                   <td><span>".$sex."</span></td>
-                                                  <td><span>".$row['sectionName']."</span></td>
+                                                  <td><span>".$row['section']."</span></td>
                                                   <td><span>".$row['email']."</span></td>
-                                                  <td><span>".$row['verificationCode']."</span></td>
-                                                  <td><span>".$row['verificationStatus']."</span></td>
+                                                  <td><span>".$row['vC']."</span></td>
+                                                  <td><span>".$row['vS']."</span></td>
                                                   <td><a href='delete-candidate.php?candidateId=".$candidateId."'><span class='tag tag-default'>Delete</a></span></td></tr>";
                                       }
                                     }else{
@@ -258,6 +325,8 @@ function getPath(){
                                     }
                                       ?>
                                     </tbody>
+
+
                                 </table>
                             </div>
                         </div>

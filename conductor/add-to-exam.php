@@ -103,12 +103,16 @@ if(isset($_POST['done'])){
 <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<!-- Plugins css -->
-<link rel="stylesheet" href="../assets/plugins/charts-c3/c3.min.css"/>
 
 <!-- Core css -->
 <link rel="stylesheet" href="../assets/css/main.css"/>
 <link rel="stylesheet" href="../assets/css/theme1.css"/>
+
+<style>
+.select-cand:hover{
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body class="font-montserrat">
@@ -125,7 +129,6 @@ if(isset($_POST['done'])){
             <div class="container-fluid">
                 <div class="page-header">
                     <div class="left">
-                        <a href="javascript:void(0)" class="icon menu_toggle mr-3"><i class="fa  fa-align-left"></i></a>
                         <h1 class="page-title">Add candidates to exam</h1>
                     </div>
                     <div class="right">
@@ -252,7 +255,7 @@ if(isset($_POST['done'])){
                                   $sex='Female';
                                 }
 
-                                echo "<tr><td><label class='custom-control custom-checkbox'><input type='checkbox' class='custom-control-input' name='".$candidateId."'><span class='custom-control-label'>&nbsp;</span></label></td>
+                                echo "<tr><td><label class='custom-control custom-checkbox select-cand'><input type='checkbox' class='custom-control-input' name='".$candidateId."'><span class='custom-control-label'>&nbsp;</span></label></td>
                                           <td><a href='candidate-detail.php?candidateId=".$candidateId."'>".$row['fname']." ".$row['lname']."</a></td>
                                           <td><span>".$sex."</span></td>
                                           <td><span>".$row['section']."</span></td>

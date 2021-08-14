@@ -57,9 +57,9 @@ if(isset($_POST['delete'])){
   $getSQuery="SELECT examId AS ei,examStatus AS es FROM examination";
   $getSResult=mysqli_query($con,$getSQuery) or die('Error to send query');
   while($eRow=mysqli_fetch_assoc($getSResult)) {
-    if($eRow['es']==='created' or  $eRow['es']==='suspended'){
+    if($eRow['es']==='created' or  $eRow['es']==='suspended' or $eRow['es']==='canceled' ){
       if(isset($_POST[$eRow['ei']]) and !empty($_POST[$eRow['ei']])){
-        $setQuery="UPDATE examination SET examStatus='created' WHERE examId=".$eRow['ei'];
+        $setQuery="DELETE FROM examination WHERE examId=".$eRow['ei'];
         mysqli_query($con,$setQuery) or die('Error to send querry');
       }
     }
@@ -103,6 +103,17 @@ if(isset($_POST['cancel'])){
 <!-- Core css -->
 <link rel="stylesheet" href="../assets/css/main.css"/>
 <link rel="stylesheet" href="../assets/css/theme1.css"/>
+
+<style>
+.tag-default:hover{
+  cursor: pointer;
+}
+.select-cand:hover{
+  cursor:pointer;
+}
+</style>
+
+
 </head>
 
 <body class="font-montserrat">
@@ -198,6 +209,7 @@ if(isset($_POST['cancel'])){
                                       <?php
                                       $examQuery="SELECT * FROM examination ORDER BY examCreationDate DESC,examDateTime DESC";
                                       $examResult=mysqli_query($con,$examQuery) or die('Error to send query');
+                                      if(mysqli_num_rows($examResult)>0){
                                       $i=1;
                                       while($examRow=mysqli_fetch_assoc($examResult)){
 
@@ -210,20 +222,20 @@ if(isset($_POST['cancel'])){
                                         $examId=$examRow['examId'];
                                         if($examRow['examStatus']==='created'){
                                           $str1="start-exam.php?examId=".$examId;
-                                          $str2="suspend-exam.php?examId=".$examId;
+                                          $str3="suspend-exam.php?examId=".$examId;
                                         }
                                         if($examRow['examStatus']==='created' or $examRow['examStatus']==='suspended'){
-                                          $str3="cancel-exam.php?examId=".$examId;
+                                          $str2="cancel-exam.php?examId=".$examId;
                                         }
                                         if($examRow['examStatus']==='suspended'){
                                           $str4="unsuspend-exam.php?examId=".$examId;
                                         }
-                                        if($examRow['examStatus']==='suspend' or $examRow['examStatus']==='canceled'){
+                                        if($examRow['examStatus']==='created' or $examRow['examStatus']==='suspend' or $examRow['examStatus']==='canceled'){
                                           $str5="delete-exam.php?examId=".$examId;
                                         }
 
                                         echo "<tr>
-                                              <td><input type='checkbox' id='".$i."' name='".$examId."'></td>
+                                              <td><input type='checkbox' class='select-cand' id='".$i."' name='".$examId."'></td>
                                               <td><a href='exam-detail.php?examId=".$examRow['examId']."'>".$examRow['examTitle']."</td>
                                               <td><span>".$examRow['examCreationDate']."</td><td>".$examRow['examDateTime']."</span></td>
                                               <td><span>".$examRow['examDuration']."</td><td>".$examRow['examCode']."</span></td>
@@ -235,6 +247,9 @@ if(isset($_POST['cancel'])){
                                               <a href='".$str5."'><span class='tag tag-default' style='margin-right:5px;'>Delete</span></a></td></tr>";
                                         $i++;
                                       }
+                                    }else{
+                                      echo "<tr><td colspan='8' style='text-align:center;'>No examination found.</td></r>";
+                                    }
                                       ?>
                                     </tbody>
                                 </table>

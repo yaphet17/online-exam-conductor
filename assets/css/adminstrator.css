@@ -1,0 +1,185 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.main-container {
+  padding-top: 0;
+}
+.tab,
+.tab_2 {
+  overflow: hidden;
+  background-color: #f1f1f1;
+  width: 100%;
+  margin-top: 0;
+}
+
+.tab button,
+.tab_2 button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+.tab_2 button {
+  border-radius: 10px 10px 0px 0px;
+  border: 0.5px solid black;
+  border-bottom: none;
+}
+.tab button:hover,
+.tab_2 button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active,
+.tab_2 button.active {
+  background-color: #ccc;
+}
+.tab_2 button.active {
+  background-color: white;
+}
+.tabcontent,
+.tabcontent_2 {
+  display: none;
+  width: 100%;
+  height: 100%;
+  border-top: none;
+}
+.main-container {
+  width: 100%;
+  min-height: 140vh;
+}
+.searchbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 12vh;
+}
+.searchbar > span {
+  width: 100%;
+  margin: 20px 0px 0px 50px;
+}
+.searchbar > button {
+  margin: 10px 0px 0px 10px;
+}
+.filter {
+  display: none;
+  float: left;
+  clear: left;
+  flex-direction: flex-start;
+  width: 100%;
+  margin: 10px 0px 0px 60px;
+}
+.userdata {
+  float: left;
+  width: 100%;
+  min-height: 140vh;
+}
+.usermanip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  float: center;
+  clear: both;
+  width: 20%;
+}
+.usermanip button {
+  width: 200px;
+  margin-bottom: 10px;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+td > button {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  height: 30px;
+}
+td > button:focus {
+  background-color: #bcbcbc;
+}
+td > button:hover {
+  background-color: #bcbcbc;
+  cursor: pointer;
+}
+.curriculumData {
+  width: 100%;
+  min-height: 140vh;
+}
+.scbtn {
+  width: 100%;
+  height: 5vh;
+}
+.c-container {
+  display: none;
+  width: 100%;
+}
+.addCur {
+  padding-top: 10px;
+  width: 100%;
+}
+.addCur form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.curField {
+  width: 30vw;
+  height: 4vh;
+  margin-bottom: 10px;
+  text-indent: 5px;
+}
+@media screen and (max-width: 640px) {
+  .header {
+    width: 100%;
+  }
+  .tab {
+    float: left;
+    overflow-x: auto;
+  }
+  .tab > button {
+    font-size: 13px;
+    padding-right: 5px;
+  }
+
+  table,
+  th,
+  td,
+  tr {
+    font-size: 12px;
+  }
+  table > th {
+    max-width: 30px;
+    overflow: scroll;
+  }
+  tr > button > i {
+    font-size: 18px;
+  }
+  td {
+    fontsize: 10px;
+  }
+}

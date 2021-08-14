@@ -36,15 +36,15 @@ require('../config.php');
                 </div>
                 <form action="<?=$_SERVER['PHP_SELF']?>" method='POST'>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="exampleInputEmail1" name='uname' value="<?php if(isset($_COOKIE["uname"])) { echo $_COOKIE["uname"]; } ?>" aria-describedby="emailHelp" placeholder="Enter Username">
+                    <input type="text" class="form-control" id="exampleInputEmail1" name='uname' value="<?php if(isset($_COOKIE["admin-uname"])) { echo $_COOKIE["admin-uname"]; } ?>" aria-describedby="emailHelp" placeholder="Enter Username">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="exampleInputPassword1" name='pass' value="<?php if(isset($_COOKIE["pass"])) { echo $_COOKIE["pass"]; } ?>" placeholder="Password">
+                    <input type="password" class="form-control" id="exampleInputPassword1" name='pass' value="<?php if(isset($_COOKIE["admin-pass"])) { echo $_COOKIE["admin-pass"]; } ?>" placeholder="Password">
 					<label class="form-label"><a href="forgot-password.php" class="float-right small">I forgot password</a></label>
                 </div>
                 <div class="form-group">
                     <label class="custom-control custom-checkbox">
-                    <input type="checkbox" name='remember' class="custom-control-input" <?php if(isset($_COOKIE['uname'])){echo "checked";}?>/>
+                    <input type="checkbox" name='remember' class="custom-control-input" <?php if(isset($_COOKIE['admin-uname'])){echo "checked";}?>/>
                     <span class="custom-control-label">Remember me</span>
                     </label>
                 </div>
@@ -53,11 +53,11 @@ require('../config.php');
                     if(isset($_POST['signin'])){
                       //Remember login credentials
                       if(!empty($_POST["remember"])) {
-	                       setcookie ("uname",$_POST["uname"],time()+ 3600);
-	                       setcookie ("pass",$_POST["pass"],time()+ 3600);
+	                       setcookie ("admin-uname",$_POST["uname"],time()+ 3600);
+	                       setcookie ("admin-pass",$_POST["pass"],time()+ 3600);
                         } else {
-	                         setcookie("username","");
-	                         setcookie("password","");
+	                         setcookie("admin-username","");
+	                         setcookie("admin-password","");
                         }
 
                       $uName=$_POST['uname'];

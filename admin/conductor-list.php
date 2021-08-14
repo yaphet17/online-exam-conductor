@@ -61,12 +61,11 @@ if(isset($_POST['add'])){
   if($checkRow['i']==='0'){
     $query="INSERT INTO conductor VALUES('".$uname."','".$hashed."','".$prefix."','".$fname."','".$lname."','".$role."','".$email."','".$verificationCode."','unverified')";
     if(mysqli_query($con,$query)){
-      echo "<p>Successfully added</p>";
     }else{
-      echo "Failed to add";
+      die("Failed to add");
     }
   }else{
-    echo "<p>Username already taken</p>";
+  die("Username already taken");
   }
 }
 ?>

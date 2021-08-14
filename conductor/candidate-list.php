@@ -56,17 +56,14 @@ if(isset($_POST['add'])){
     //Inserting user input to db
     $query="INSERT INTO candidate VALUES('".$id."','".$hashed."','".$fname."','".$lname."','".$sex."','".$cImage."','".$currDateTime."',".$section.",'".$email."','".$verificationCode."','unverified')";
     if(mysqli_query($con,$query)){
-      echo '<p>Succesfully added</p>';
       if(isset($_POST['mailunp'])){
         $to=$email;
         $subject="ONEC account username and password";
         $msg="Dear ".$fname." ".$lname." below is your username and password for your onec account\nUsername: ".$id."\nPassword: ".$pass;
         if(mail($to,$subject,$msg)){
-            echo '<p>email successfully sent</p>';
         }
       }
     }else{
-        echo '<p>Succesfully failed</p>';
     }
   }else{
     echo "<p>User name already taken</p>";
@@ -253,7 +250,7 @@ function getPath(){
 
 
                                     <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <input type='submit' class="btn btn-primary btn-block"  name='filter' value='Search'>
+                                        <input type='submit' class="btn btn-primary btn-block"  name='filter' value='Filter'>
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +260,6 @@ function getPath(){
                         <div class="card">
                             <div class="table-responsive">
                                 <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
-
                                     <thead>
                                         <tr>
                                             <th>Name</th>

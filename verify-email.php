@@ -13,24 +13,18 @@ if(!isset($_SESSION['uname']) or !isset($_SESSION['pass']) or !isset($_SESSION['
 }
 
 
-$uname="yafet123";//$_SESSION['username'];
+$uname=$_SESSION['uname'];
 
 if(isset($_POST['verify'])){
   $verifyQuery="SELECT verificationCode AS vc,verificationStatus AS vs FROM candidate WHERE candidateId='".$uname."' LIMIT 1";
   $verifyResult=mysqli_query($con,$verifyQuery) or die('Error to send query');
-  $verifyRow=mysqli_fetch_assoc($verifyResult) or die('Error to fetch query');
-  if($verifyRow['vs']==='verified'){
-    die('Your account is already verified');
-  }else{
-    if($verifyRow['vc']===$_POST['vcode']){
+  $verifyRow=mysqli_fetch_assoc($verifyResult) or die('Error to fetch queryyy');
+  if($verifyRow['vc']===$_POST['vcode']){
       $statusQuery="UPDATE candidate SET verificationStatus='verified' WHERE candidateId='".$uname."'";
       mysqli_query($con,$statusQuery) or die('Error to send query');
-      echo "Succesfully verified";
-    }else{
-      die('Invalid verification code');
-    }
+  }else{
+    die('Invalid verification code');
   }
-
 }
 
 ?>
@@ -50,7 +44,7 @@ if(isset($_POST['verify'])){
       if($verifyRow['vc']===htmlspecialchars($_GET['verificationCode'])){
         $statusQuery="UPDATE candidate SET verificationStatus='verified' WHERE candidateId='".$uname."'";
         mysqli_query($con,$statusQuery) or die('Error to send query');
-        echo "Succesfully verified";
+        header('Location: dashboard.php');
       }else{
         die('Invalid verification code');
       }

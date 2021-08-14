@@ -132,19 +132,19 @@ $status=$row['examStatus'];
                           <div class="card-header">
                               <a href='<?php if($status=='created') {echo "add-to-exam.php?examId=".$examId;}else{echo '#';}?>' class="card-title" style='margin-right:15px;'>Add candidate</a>
                               <a href='<?php if($status=='created') {echo "add-question.php?examId=".$examId;}else{echo '#';}?>' class="card-title" style='margin-right:15px;'>Add question</a>
+                              <a href='#' class="card-title" style='margin-right:15px;'>Spreadsheet report</a>
+                              <a href='generate-pdf.php?examId=<?php echo $examId;?>' class="card-title" style='margin-right:15px;'>Pdf report</a>
                           </div>
                             <div class="card-body">
                                 <div class="timeline_item ">
                                     <span><a href="javascript:void(0);"><?php echo $examTitle;?></a>
-                                      <a href='exam-report.php?examId=<?php echo $examId;?>' class='btn btn-primary float-right text-right'>Exam Report</a>
                                       </span>
                                     <div class="dropdown-divider"></div>
                                     <div class="msg">
                                       <?php
-                                      echo "";
 
                                       echo "<p>Conducted By: ".$prefix." ".$fname." ".$lname."</p>
-                                           <p>Creation On: ".$cDate."</p>
+                                           <p>Created On: ".$cDate."</p>
                                            <p>Starts in: ".$eDate."</p>
                                            <p>Duration: ".$eDura."</p>
                                            <p>Total Question: ".$totQ."</p>
@@ -165,7 +165,7 @@ $status=$row['examStatus'];
                     <div class="col-12">
                         <div class="card">
                             <div class="table-responsive">
-                            <table class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
+                            <table id='examreport' class="table table-hover table-striped table-vcenter mb-0 text-nowrap">
                                   <thead>
                                     <tr>
                                       <th colspan='6'>Candidates enrolled to the exam</th>

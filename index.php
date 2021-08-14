@@ -1,111 +1,80 @@
 <?php
 session_start();
 require('config.php');
-
-
-
 ?>
-<!doctype html>
-<html lang="en" dir="ltr">
 
-<!-- soccer/project/login.html  07 Jan 2020 03:42:43 GMT -->
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!DOCTYPE html>
 
+<html>
 
-<title>ONEC Login</title>
-
-<!-- Bootstrap Core and vandor -->
-<link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<!-- Core css -->
-<link rel="stylesheet" href="assets/css/main.css"/>
-<link rel="stylesheet" href="assets/css/theme1.css"/>
-
+<head lang="en">
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="assets/css/index.css" >
 </head>
-<body class="font-montserrat">
 
-<div class="auth">
-    <div class="auth_left">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-title">Login to your account</div>
-                <div class="form-group">
-                    <select class="custom-select">
-                        <option>Candidate</option>
-                    </select>
-                </div>
-                <form action="<?=$_SERVER['PHP_SELF']?>" method='POST'>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="exampleInputEmail1" name='uname' value="<?php if(isset($_COOKIE["uname"])) { echo $_COOKIE["uname"]; } ?>" aria-describedby="emailHelp" placeholder="Enter Username">
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" id="exampleInputPassword1" name='pass' value="<?php if(isset($_COOKIE["pass"])) { echo $_COOKIE["pass"]; } ?>" placeholder="Password">
-					<label class="form-label"><a href="forgot-password.php" class="float-right small">I forgot password</a></label>
-                </div>
-                <div class="form-group">
-                    <label class="custom-control custom-checkbox">
-                    <input type="checkbox" name='remember' class="custom-control-input" <?php if(isset($_COOKIE['uname'])){echo "checked";}?>/>
-                    <span class="custom-control-label">Remember me</span>
-                    </label>
-                </div>
-                <div class="form-group">
-                    <?php
-                    if(isset($_POST['signin'])){
-                      //Remember login credentials
-                      if(!empty($_POST["remember"])) {
-	                       setcookie ("uname",$_POST["uname"],time()+ 3600);
-	                       setcookie ("pass",$_POST["pass"],time()+ 3600);
-                        } else {
-	                         setcookie("username","");
-	                         setcookie("password","");
-                        }
 
-                      $uName=$_POST['uname'];
-                      $pass=$_POST['pass'];
+<body>
+    <header>
+        <div class='header'>
+            <p class='title'>ONEC</p>
+        </div>
+    </header>
+    <div class="main_container">
+        <div class="signForm">
+            <form action="<?=$_SERVER['PHP_SELF']?>" method='POST' >
+                    <span>
+                        <p class='signLabel'>Signin</p>
+                    </span>
+                    <span>
+                      <?php
+                      if(isset($_POST['signin'])){
+                        //Remember login credentials
+                        if(!empty($_POST["remember"])) {
+                           setcookie ("uname",$_POST["uname"],time()+ 3600);
+                           setcookie ("pass",$_POST["pass"],time()+ 3600);
+                          } else {
+                             setcookie("username","");
+                             setcookie("password","");
+                          }
 
-                      //Sanitize user input
-                      $uName=stripcslashes($uName);
-                      $pass=stripcslashes($pass);
+                        $uName=$_POST['uname'];
+                        $pass=$_POST['pass'];
 
-                      $query="SELECT candidateId,password,email FROM candidate WHERE candidateId='".$uName."' OR email='".$uName."' LIMIT 1";
-                      $result=mysqli_query($con,$query) or die("Error to send query");
-                      $numRows=mysqli_num_rows($result);
-                      if($numRows!=0){
-                        $row=mysqli_fetch_assoc($result) or die("Error to fetch query");
-                        if(password_verify($pass,$row['password'])){
-                            $_SESSION['uname']=$uName;
-                            $_SESSION['pass']=$pass;
-                            $_SESSION['level']="a8226c2";
-                            echo "<script>alert('yes');</script>";
-                            header('Location: dashboard.php');
+                        //Sanitize user input
+                        $uName=stripcslashes($uName);
+                        $pass=stripcslashes($pass);
 
+                        $query="SELECT candidateId,password,email,verificationStatus FROM candidate WHERE candidateId='".$uName."' LIMIT 1";
+                        $result=mysqli_query($con,$query) or die("Error to send query");
+                        $numRows=mysqli_num_rows($result);
+                        if($numRows!=0){
+                          $row=mysqli_fetch_assoc($result) or die("Error to fetch query");
+                          if(password_verify($pass,$row['password'])){
+                              $_SESSION['uname']=$uName;
+                              $_SESSION['pass']=$pass;
+                              $_SESSION['level']="a8226c2";
+                              if($row['verificationStatus']==='unverified'){
+                                header('Location: verify-email.php');
+                              }else{
+                                header('Location: dashboard.php');
+                              }
+                          }else{
+                          echo "<p style='color:red;'><i class='fa fa-warning' style='font-size:20px;color:red;margin-right:5px;'></i>Invalid Password</p>";
+                          }
                         }else{
-                        echo "<p style='color:red;'><i class='fa fa-warning' style='font-size:20px;color:red;margin-right:5px;'></i>Invalid Password</p>";
+                          echo "<p style='color:red;'><i class='fa fa-warning' style='font-size:20px;color:red;margin-right:5px;'></i>Invalid Username</p>";
                         }
-                      }else{
-                        echo "<p style='color:red;'><i class='fa fa-warning' style='font-size:20px;color:red;margin-right:5px;'></i>Invalid Username</p>";
-                      }
 
-                    } ?>
-                </div>
-                <div class="form-footer">
-                    <input type='submit' class="btn btn-primary btn-block" name='signin' value="Sign in" title="Sign in">
-                </div>
-              </form>
-            </div>
-
+                      } ?>
+                    </span>
+                    <input type="text" class="email signField" name='uname' placeholder="Username" value="<?php if(isset($_COOKIE["uname"])) { echo $_COOKIE["uname"]; } ?>" required>
+                    <input type="password" id="password" name='pass' value="<?php if(isset($_COOKIE["pass"])) { echo $_COOKIE["pass"]; } ?>" class="password signField" placeholder="Password" required>
+                    <span><input type="submit" id="signin" value="Signin" name='signin' class="submitSign"></span>
+                    <span class='remeber-box' ><label><input type="checkbox" name='remember' class='remeber' <?php if(isset($_COOKIE['uname'])){echo "checked";}?>> Remeber Me<label></span>
+            </form>
         </div>
     </div>
-    <div class="auth_right full_img"></div>
-</div>
-
-<script src="assets/bundles/lib.vendor.bundle.js"></script>
-<script src="assets/js/core.js"></script>
 </body>
 
-<!-- soccer/project/login.html  07 Jan 2020 03:42:43 GMT -->
 </html>

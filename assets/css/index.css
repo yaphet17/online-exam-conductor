@@ -1,0 +1,145 @@
+@font-face {
+  font-family: Vudotronic;
+  src: url(../fonts/Vudotronic.woff);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin-left: 0px;
+}
+header {
+  width: 100%;
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  display: flex;
+  width: 100%;
+  height: 10vh;
+  background-color: #0a0638;
+}
+.title {
+  position: absolute;
+  margin: 0px 70% 0px 0px;
+  font-family: Vudotronic;
+  font-size: 2em;
+  color: #f1f1f1;
+}
+.main_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+}
+fieldset {
+  border-width: 0px;
+}
+.description {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.signForm {
+  width: 40vw;
+  height: 47vh;
+  margin: 100px 50px 0px 0px;
+  background-color: #ffff;
+  box-shadow: 1px 1px 10px #b2b2b2;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+.signForm form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: inherit;
+}
+.signLabel {
+  font-size: 30px;
+  color: #0a0638;
+}
+.notifLabel {
+  height: 3vh;
+  margin: 0px 0px 5px 0px;
+  color: red;
+}
+.signField {
+  margin-bottom: 10px;
+  width: 30vw;
+  height: 5vh;
+  border: 0.5px solid #cfcfcf;
+  text-indent: 10px;
+  outline: 0px;
+}
+.signField:hover {
+  outline: 2px solid #0a0638;
+}
+.selectBox {
+  margin-top: 10px;
+  width: 15vw;
+  height: 5vh;
+}
+.singForm > form > span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+fieldset > span > label > input {
+  margin: 0px 15px 0px 10px;
+}
+.submitSign {
+  width: 30vw;
+  height: 5vh;
+  background-color: #0a0638;
+  color: #f1f1f1;
+}
+.remeber-box{
+  display:flex;
+  justify-content: flex-start;
+  width:30vw;
+  font-size: 20px;
+}
+span label{
+  color:#0a0638;
+}
+@media screen and (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 15vh;
+  }
+  .title {
+    top: 10px;
+    margin: 0px 0px 10px 0px;
+  }
+  .signForm {
+    width: 100%;
+    margin: 0px 0px 0px 0px;
+  }
+  .signField {
+    width: 70vw;
+  }
+  .selectBox {
+    width: 35vw;
+  }
+  .submitSign {
+    width: 20vw;
+  }
+  .footer {
+    margin-top: 0px;
+  }
+}
