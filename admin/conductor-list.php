@@ -52,14 +52,11 @@ if(isset($_POST['add'])){
   $hashed=password_hash($pass,PASSWORD_DEFAULT);
 
 
-  //Generate verification bind_textdomain_codeset
-  $verificationCode=bin2hex(openssl_random_pseudo_bytes(7));
-
   $checkQuery="SELECT COUNT(*) AS i FROM conductor WHERE username='".$uname."'";
   $checkResult=mysqli_query($con,$checkQuery) or die('Error to send query');
   $checkRow=mysqli_fetch_assoc($checkResult) or die('Error to fetch result');
   if($checkRow['i']==='0'){
-    $query="INSERT INTO conductor VALUES('".$uname."','".$hashed."','".$prefix."','".$fname."','".$lname."','".$role."','".$email."','".$verificationCode."','unverified')";
+    $query="INSERT INTO conductor VALUES('".$uname."','".$hashed."','".$prefix."','".$fname."','".$lname."','".$role."','".$email."')";
     if(mysqli_query($con,$query)){
     }else{
       die("Failed to add");

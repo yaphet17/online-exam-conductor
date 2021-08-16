@@ -79,6 +79,7 @@ if(isset($_POST['cancel'])){
 //Submitting user input
 if(isset($_POST['create'])){
   $examTitle=$_POST['examTitle'];
+  $examInstruct=$_POST['examInstruct'];
   $examDT=$_POST['examDateTime'];
   $examDuration=$_POST['examDuration'];
   $totalQuestion=$_POST['totalQuestion'];
@@ -87,6 +88,11 @@ if(isset($_POST['create'])){
 
   //Sanitize user input
   $examTitle=stripcslashes($examTitle);
+  $examInstruct=stripcslashes($examInstruct);
+  $examDuration=stripcslashes($examDuration);
+  $totalQuestion=stripcslashes($totalQuestion);
+  $markPRA=stripcslashes($markPRA);
+  $markPWA=stripcslashes($markPWA);
 
   //Current date and time
   $examCD=date('y-m-d h:i:s');
@@ -98,9 +104,9 @@ if(isset($_POST['create'])){
   $examDateTime=explode('T',$_POST['examDateTime']);
   $examDateTime=$examDateTime[0]." ".$examDateTime[1];
 
-  $columns="conductorId,examTitle,examCreationDate,examDateTime,examDuration,totalQuestion,marksPerRightAnswer,marksPerWrongAnswer,examCode,examStatus";
+  $columns="conductorId,examTitle,examInstruction,examCreationDate,examDateTime,examDuration,totalQuestion,marksPerRightAnswer,marksPerWrongAnswer,examCode,examStatus";
 
-   $query="INSERT INTO examination (".$columns.") VALUES('".$conductorId."','".$examTitle."','".$examCD."','".$examDT."','".$examDuration."',".$totalQuestion.",".$markPRA.",".$markPWA.",'".$examCode."','created')";
+   $query="INSERT INTO examination (".$columns.") VALUES('".$conductorId."','".$examTitle."','".$examInstruct."','".$examCD."','".$examDT."','".$examDuration."',".$totalQuestion.",".$markPRA.",".$markPWA.",'".$examCode."','created')";
    mysqli_query($con,$query) or die('Error to send query');
 
    $eiQuery="SELECT examId FROM examination WHERE conductorId='".$conductorId."' AND examCreationDate='".$examCD."' LIMIT 1";
@@ -253,24 +259,24 @@ if(isset($_POST['create'])){
                                       $examQuery="SELECT * FROM examination WHERE conductorId='".$conductorId."' ORDER BY examCreationDate DESC,examDateTime DESC";
                                       $examResult=mysqli_query($con,$examQuery) or die('Error to send query');
                                       $i=1;
-                                      while($examRow=mysqli_fetch_assoc($examResult)){
-                                        $examId=$examRow['examId'];
-                                        $str1='#';
-                                        $str2='#';
-                                        $str3='#';
-                                        $str4='#';
-                                        $examId=$examRow['examId'];
-                                        if($examRow['examStatus']==='created'){
-                                          $str1="start-exam.php?examId=".$examId;
-                                          $str2="suspend-exam.php?examId=".$examId;
-                                        }
-                                        if($examRow['examStatus']==='created' or $examRow['examStatus']==='suspended'){
-                                          $str3="cancel-exam.php?examId=".$examId;
-                                        }
-                                        if($examRow['examStatus']==='suspended'){
-                                          $str4="unsuspend-exam.php?examId=".$examId;
-                                        }
-
+                                      if(mysqli_num_rows($examResult)){
+                                        while($examRow=mysqli_fetch_assoc($examResult)){
+                                          $examId=$examRow['examId'];
+                                          $str1='#';
+                                          $str2='#';
+                                          $str3='#';
+                                          $str4='#';
+                                          $examId=$examRow['examId'];
+                                          if($examRow['examStatus']==='created'){
+                                            $str1="start-exam.php?examId=".$examId;
+                                            $str2="suspend-exam.php?examId=".$examId;
+                                          }
+                                          if($examRow['examStatus']==='created' or $examRow['examStatus']==='suspended'){
+                                            $str3="cancel-exam.php?examId=".$examId;
+                                          }
+                                          if($examRow['examStatus']==='suspended'){
+                                            $str4="unsuspend-exam.php?examId=".$examId;
+                                          }
                                         echo "<tr>
                                               <td><input type='checkbox' class='select-cand'  id='".$i."' name='".$examId."'></td>
                                               <td><a href='exam-detail.php?examId=".$examRow['examId']."'>".$examRow['examTitle']."</td>
@@ -283,6 +289,9 @@ if(isset($_POST['create'])){
                                               <a href='".$str4."'><span class='tag tag-default' style='margin-right:5px;'>Cancel</span></a></td></tr>";
                                         $i++;
                                       }
+                                    }else{
+                                      echo "<tr><td style='text-align:center;' colspan='7'>No exam found</td></tr>";
+                                    }
                                       ?>
                                     </tbody>
                                 </table>
@@ -314,7 +323,13 @@ if(isset($_POST['create'])){
                                   <div class="form-group row">
                                       <label class="col-md-3 col-form-label">Exam Title <span class="text-danger">*</span></label>
                                       <div class="col-md-7">
-                                          <input type='textarea' name='examTitle' class="form-control" >
+                                          <input type='text' name='examTitle' class="form-control" >
+                                      </div>
+                                  </div>
+                                  <div class="form-group row">
+                                      <label class="col-md-3 col-form-label">Exam Instruction <span class="text-danger">*</span></label>
+                                      <div class="col-md-7">
+                                          <input type='text' name='examInstruct' class="form-control" >
                                       </div>
                                   </div>
                                   <div class="form-group row">
@@ -324,9 +339,9 @@ if(isset($_POST['create'])){
                                       </div>
                                   </div>
                                   <div class="form-group row">
-                                      <label class="col-md-3 col-form-label"  placeholder="HH:MM:SS">Duration <span class="text-danger">*</span></label>
+                                      <label class="col-md-3 col-form-label"  >Duration <span class="text-danger">*</span></label>
                                       <div class="col-md-7">
-                                          <input type='text' name='examDuration' class="form-control">
+                                          <input type='text' name='examDuration' placeholder="HH : MM : SS" class="form-control">
                                       </div>
                                   </div>
                                   <div class="form-group row">

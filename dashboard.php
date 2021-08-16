@@ -33,11 +33,9 @@ $candidateId=$_SESSION['uname'];
                 <p  id="dropbtn"class='dropbtn hidden-in-lw'>MORE <i style='margin-left:5px;' class='fa fa-caret-down'></i></p>
                 <div class='dropdown'>
                   <div id="dropdown-content" class='dropdown-content'>
-                    <a href="#" title="Profile"><img src="assets/icons/profile2.png" width="25" height="27" /> <p>Profile</p></a>
-                    <a href="#" title="Logout"><img src="assets/icons/logout2.png" width="25" height="27" /><p>Logout</p></a>
+                    <a href="logout.php" title="Logout"><img src="assets/icons/logout2.png" width="25" height="27" /><p>Logout</p></a>
                   </div>
                   </div>
-                <a href="#" class="hidden-in-sw" title="Profile"><img src="assets/icons/profile.png" width="25" height="27" /></a>
                 <a href="logout.php" class="hidden-in-sw" title="Logout"><img src="assets/icons/logout.png" width="25" height="27" /></a>
               </div>
           </div>
@@ -69,7 +67,7 @@ $candidateId=$_SESSION['uname'];
                           </tr>
                           <?php
                           if(isset($_POST['search'])){
-                            $examTitle=$_POST['examTitle'];
+                              $examTitle=$_POST['examTitle'];
                               $query="SELECT e.examId AS ei,e.examTitle AS et,e.examDateTime AS edt,e.examDuration AS ed,e.totalQuestion AS tq,c.prefix AS p,c.firstName AS f,c.lastName AS l,e.examStatus AS es FROM examination e,conductor c WHERE e.examTitle='".$examTitle."' AND e.conductorId=c.username ORDER BY examDateTime DESC,examStatus DESC";
                           }else{
                             $query="SELECT e.examId AS ei,e.examTitle AS et,e.examDateTime AS edt,e.examDuration AS ed,e.totalQuestion AS tq,c.prefix AS p,c.firstName AS f,c.lastName AS l,e.examStatus AS es FROM examination e,conductor c WHERE e.conductorId=c.username ORDER BY examDateTime DESC,examStatus DESC";
@@ -86,7 +84,7 @@ $candidateId=$_SESSION['uname'];
                             }
 
                           }else{
-                            echo "<tr><td colspan='7' style='text-align:center;'>You aren't added any exam.</td></tr>";
+                            echo "<tr><td colspan='7' style='text-align:center;'>No match found.</td></tr>";
                           }
                           ?>
                 </table>
@@ -95,17 +93,23 @@ $candidateId=$_SESSION['uname'];
             <div id="course" class="tabcontent">
                 <table id="courseTable">
                     <tr>
-                      <th>Candidate</th>
                       <th>Exam Title</th>
-                      <th>Obtained Mark</th>
+                      <th>Exam Date</th>
+                      <th>Total Question</th>
                       <th>Maximum Mark</th>
+                      <th>Obtained Mark</th>
                     </tr>
                     <?php
-                    $resultQuery="SELECT m.maximumMark AS mm,m.obtainedMark AS om,e.examTitle AS et,c.firstName AS fn,c.lastName AS lsn FROM marK m,examination e,candidate c WHERE m.candidateId='".$candidateId."' AND m.candidateId=c.candidateId AND m.examId=e.examId";
+                    $resultQuery="SELECT m.maximumMark AS mm,m.obtainedMark AS om,e.examId AS eid,e.examTitle AS et,e.examDateTime AS ed,e.totalQuestion AS tq FROM marK m,examination e,candidate c WHERE m.candidateId='".$candidateId."' AND m.candidateId=c.candidateId AND m.examId=e.examId";
                     $resultResult=mysqli_query($con,$resultQuery) or die('Error to send query');
                     if(mysqli_num_rows($resultResult)>0){
                       while($resultRow=mysqli_fetch_assoc($resultResult)){
-                        echo "<tr><td>".$resultRow['fn']." ".$resultRow['lsn']."</td><td>".$resultRow['et']."</td><td>".$resultRow['om']."</td><td>".$resultRow['mm']."</td></tr>";
+                        echo "<tr>
+                                  <td><a href='exam-result.php?examId=".$resultRow['eid']."'>".$resultRow['et']."</td>
+                                  <td>".$resultRow['ed']."</td>
+                                  <td>".$resultRow['tq']."</td>
+                                  <td>".$resultRow['mm']."</td>
+                                  <td>".$resultRow['om']."</td></tr>";
                       }
                     }
                     else{
@@ -117,9 +121,6 @@ $candidateId=$_SESSION['uname'];
 
                 </table>
             </div>
-            <div id="materials" class="tabcontent"><p>Materials here</p></div>
-
-
           </div>
           <footer>
             <div class="footer">

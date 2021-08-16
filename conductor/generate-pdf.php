@@ -40,7 +40,7 @@ $code=$row['examCode'];
 
 
   $html="<span style='display:flex;justify-content:center;'><h2 style='background-color:#0A0638;text-align:center;font-size:28px;color:#F1F1F1;'>Candidates Result</h2></span>";
-$html.="<table cellspacing='0' cellspadding='0' border='1' style='width:100%;border-color:#0A0638;'>
+  $html.="<table cellspacing='0' cellspadding='0' border='1' style='width:100%;border-color:#0A0638;'>
         <thead>
           <tr style='background-color:#0A0638; border-color:#0A0638;'>
             <th style='color:#F1F1F1;'>Name</th>

@@ -34,10 +34,10 @@ if(isset($_POST['add'])){
   $tqResult=mysqli_query($con,$tqQuery) or die('Error to send query');
   if($tqRow=mysqli_fetch_assoc($tqResult)){
   for($j=1;$j<=$tqRow['totalQuestion'];$j++){
-  $qt="questionTitle".$j;
-  $op="answerOption".$j;
-  $questionTitle=$_POST[$qt];
-  $option=$_POST[$op];
+    $qt="questionTitle".$j;
+    $op="answerOption".$j;
+    $questionTitle=$_POST[$qt];
+    $option=$_POST[$op];
 
   //Sanitizing user input
   $questionTitle=stripcslashes($questionTitle);
@@ -103,12 +103,14 @@ if(isset($_POST['add'])){
     echo "<p>Failed to add question</p>";
   }
 }
+  $redirect="Location: add-to-exam.php?examId=".$examId;
+  header($redirect);
 }
 }
 
 //Redirect to exam list page
 if(isset($_POST['done'])){
-  header('Location: add-to-exam.php?examId=".$examId."');
+  header('Location: exam-list.php');
 }
 
 ?>

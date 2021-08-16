@@ -42,8 +42,6 @@ if(isset($_POST['addSection'])){
         if($checkRow['n']==0){
           $query="INSERT INTO examenrollment (candidateId,examId,attendanceStatus) VALUES('".$candidateRow['ci']."',".$examId.",'notattended')";
           mysqli_query($con,$query) or die('Error to send query');
-        }else{
-          die('Already enrolled');
         }
       }
     }
@@ -274,9 +272,8 @@ if(isset($_POST['done'])){
                     <div class="card" style='margin-top:20px;'>
                       <div class="form-group row">
                           <div class="col-md-7">
-                              <button type="submit" id='markAll'class="btn btn-primary">Mark all</button>
                               <button type="submit" name='addCandidate' class="btn btn-primary">Add</button>
-                                <button type="submit" name='done' class="btn btn-primary">Done</button>
+                              <button type="submit" name='done' class="btn btn-primary">Done</button>
                           </div>
                       </div>
                       </div>

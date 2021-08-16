@@ -45,8 +45,6 @@ if(isset($_POST['add'])){
   //Current date and posix_times
   $currDateTime=date('y-m-d h:i:s');
 
-  //Generat verification bind_textdomain_codeset
-  $verificationCode=bin2hex(openssl_random_pseudo_bytes(7));
 
   //Check if there a candidate with the same id or Username
   $checkQuery="SELECT count(candidateId) AS i FROM candidate WHERE candidateId='".$id."'";
@@ -54,7 +52,7 @@ if(isset($_POST['add'])){
   $checkRow=mysqli_fetch_assoc($result) or die('Error to fetch query');
   if($checkRow['i']==='0'){
     //Inserting user input to db
-    $query="INSERT INTO candidate VALUES('".$id."','".$hashed."','".$fname."','".$lname."','".$sex."','".$cImage."','".$currDateTime."',".$section.",'".$email."','".$verificationCode."','unverified')";
+    $query="INSERT INTO candidate VALUES('".$id."','".$hashed."','".$fname."','".$lname."','".$sex."','".$cImage."','".$currDateTime."',".$section.",'".$email."')";
     if(mysqli_query($con,$query)){
       if(isset($_POST['mailunp'])){
         $to=$email;
@@ -265,30 +263,31 @@ function getPath(){
                                             <th>Name</th>
                                             <th>Sex</th>
                                             <th>Section</th>
+                                            <th>Academic Year</th>
+                                            <th>Department</th>
                                             <th>Email</th>
-                                            <th>Verification Code</th>
-                                            <th>Verification Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                       <?php
-                                      $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c  WHERE c.sectionId=s.sectionId";
+                                      $cols="c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,s.sectionName AS section,s.academicYear AS year,s.department AS depart";
+                                      $query="SELECT ".$cols." FROM section s,candidate c  WHERE c.sectionId=s.sectionId";
                                       //Filter candidates
                                       if(isset($_POST['filter'])){
                                         if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
-                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                            $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
                                         }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']==="all"){
-                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                            $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' ORDER BY s.academicYear,s.sectionName,s.department";
                                         }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
-                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
+                                            $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
                                         }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
-                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                            $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND  s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
                                         }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']!="all" and $_POST['department']==="all"){
-                                          $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
+                                          $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.academicYear=".$_POST['academicYear']." ORDER BY s.academicYear,s.sectionName,s.department";
                                         }else if($_POST['sectionFilter']!="all" and $_POST['academicYear']==="all" and $_POST['department']!="all"){
-                                          $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                          $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.sectionName='".$_POST['sectionFilter']."' AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
                                         }else if($_POST['sectionFilter']==="all" and $_POST['academicYear']!="all" and $_POST['department']!="all"){
-                                            $query="SELECT c.candidateId AS ci,c.firstName AS fname,c.lastName AS lname,c.sex AS sx,c.email AS email,c.verificationCode AS vC,c.verificationStatus AS vS,s.sectionName AS section,s.academicYear AS year,s.department AS depart FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
+                                            $query="SELECT ".$cols." FROM section s,candidate c WHERE c.sectionId=s.sectionId AND s.academicYear=".$_POST['academicYear']." AND s.department='".$_POST['department']."' ORDER BY s.academicYear,s.sectionName,s.department";
                                         }
                                       }
 
@@ -302,13 +301,24 @@ function getPath(){
                                           $sex='Female';
                                         }
 
+                                        $year=$row['year'];
+                                        if($year==1){
+                                            $suffix='st';
+                                        }else if($year==2){
+                                            $suffix='nd';
+                                        }else if($year==3){
+                                            $suffix='rd';
+                                        }else{
+                                            $suffix='th';
+                                        }
+
                                         echo "<tr>
                                                   <td><a href='candidate-detail.php?candidateId=".$candidateId."'>".$row['fname']." ".$row['lname']."</a></td>
                                                   <td><span>".$sex."</span></td>
                                                   <td><span>".$row['section']."</span></td>
-                                                  <td><span>".$row['email']."</span></td>
-                                                  <td><span>".$row['vC']."</span></td>
-                                                  <td><span>".$row['vS']."</span></td></tr>";
+                                                  <td>".$year.$suffix."</td>
+                                                  <td>".$row['depart']."</td>
+                                                  <td><span>".$row['email']."</span></td></tr>";
                                       }
                                     }else{
                                       echo "<tr><td colspan='9' style='text-align:center;'>No candidate found</td></tr>";

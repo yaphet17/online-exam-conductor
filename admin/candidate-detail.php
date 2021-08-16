@@ -29,9 +29,6 @@ $sex=$row['sex'];
 $regDate=$row['registrationDate'];
 $section=$row['sectionName'];
 $email=$row['email'];
-$vCode=$row['verificationCode'];
-$vStatus=$row['verificationStatus'];
-
 ?>
 
 <!doctype html>
@@ -139,9 +136,7 @@ $vStatus=$row['verificationStatus'];
                                                <p>Sex: ".$sex."</p>
                                                <p>Registration Date: ".$regDate."</p>
                                                <p>Section: ".$section."</p>
-                                               <p>Email: ".$email."</p>
-                                               <p>Verification Code: ".$vCode."</p>
-                                               <p>Verification Status: ".$vStatus."</p>";
+                                               <p>Email: ".$email."</p>";
                                         ?>
                                     </div>
                                 </div>

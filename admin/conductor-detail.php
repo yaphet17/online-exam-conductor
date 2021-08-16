@@ -31,9 +31,6 @@ $fname=$row['firstName'];
 $lname=$row['lastName'];
 $role=$row['role'];
 $email=$row['email'];
-$code=$row['verificationCode'];
-$status=$row['verificationStatus'];
-
 ?>
 
 
@@ -129,9 +126,7 @@ $status=$row['verificationStatus'];
                                         <?php
                                         echo "<p>Name: ".$prefix." ".$fname." ".$lname."</p>
                                                 <p>Role: ".$role."</p>
-                                                <p>Email: ".$row['email']."</p>
-                                                <p>Verification Code: ".$code."</p>
-                                                <p>Verification Status: ".$status."</p>";
+                                                <p>Email: ".$row['email']."</p>";
                                         ?>
                                     </div>
                                 </div>

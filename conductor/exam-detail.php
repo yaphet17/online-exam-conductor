@@ -130,7 +130,7 @@ $status=$row['examStatus'];
                     <div class="col-lg-8 col-md-12 mt-4">
                         <div class="card">
                           <div class="card-header">
-                              <a href='<?php if($status=='created') {echo "add-to-exam.php?examId=".$examId;}else{echo '#';}?>' class="card-title" style='margin-right:15px;'>Add candidate</a>
+                              <a href='<?php if($status=='created' or $status=='started') {echo "add-to-exam.php?examId=".$examId;}else{echo '#';}?>' class="card-title" style='margin-right:15px;'>Add candidate</a>
                               <a href='<?php if($status=='created') {echo "add-question.php?examId=".$examId;}else{echo '#';}?>' class="card-title" style='margin-right:15px;'>Add question</a>
                               <a href='#' class="card-title" style='margin-right:15px;'>Spreadsheet report</a>
                               <a href='generate-pdf.php?examId=<?php echo $examId;?>' class="card-title" style='margin-right:15px;'>Pdf report</a>
@@ -138,7 +138,9 @@ $status=$row['examStatus'];
                             <div class="card-body">
                                 <div class="timeline_item ">
                                     <span><a href="javascript:void(0);"><?php echo $examTitle;?></a>
+                                      <a href="exam-preview.php?examId='<?php echo $examId;?>'" class="float-right text-right btn btn-primary">Exam Preview</a>
                                       </span>
+
                                     <div class="dropdown-divider"></div>
                                     <div class="msg">
                                       <?php
@@ -193,21 +195,19 @@ $status=$row['examStatus'];
                                       echo "<tr><td><a href='candidate-detail.php?candidateId=".$candidateRow['candidateId']."'>".$candidateRow['firstName']." ".$candidateRow['lastName']."</a></td>
                                                 <td><span>".$sectionRow['sectionName']."</span></td>
                                                 <td><span>".$sectionRow['department']."</span></td>
-                                                <td><span>".$sectionRow['academicYear']."</span></td>";
+                                                <td><span>".$sectionRow['academicYear']."</span></td>
+                                                <td><span class='tag tag-default'>".$candidateRow['attendanceStatus']."</span></td>";
                                       if($examStatus){
                                         $markQuery="SELECT maximumMark AS mm,obtainedMark AS om FROM mark WHERE candidateId='".$candidateRow['candidateId']."' AND examId=".$examId;
                                         $markResult=mysqli_query($con,$markQuery) or die('Error to send querry');
                                         if(mysqli_num_rows($markResult)!=0){
                                           $markRow=mysqli_fetch_assoc($markResult) or die('Error to fetch query');
-                                          echo "<td><span class='tag tag-default'>".$candidateRow['attendanceStatus']."</span></td>
-                                              <td><span>".$markRow['om']."/".$markRow['mm']."</span></td></tr>";
+                                          echo "<td><span>".$markRow['om']."/".$markRow['mm']."</span></td></tr>";
                                         }else{
-                                          echo "<td><span class='tag tag-default'>none</span></td>
-                                                <td><span>none</span></td></tr>";
+                                          echo "<td><span>none</span></td></tr>";
                                         }
                                       }else{
-                                        echo "<td><span class='tag tag-default'>none</span></td>
-                                              <td><span>none</span></td></tr>";
+                                        echo "<td><span>none</span></td></tr>";
                                       }
 
                                     }

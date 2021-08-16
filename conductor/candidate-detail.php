@@ -38,8 +38,6 @@ $sex=$row['sex'];
 $regDate=$row['registrationDate'];
 $section=$row['sectionName'];
 $email=$row['email'];
-$vCode=$row['verificationCode'];
-$vStatus=$row['verificationStatus'];
 
 ?>
 <!doctype html>
@@ -155,9 +153,7 @@ $vStatus=$row['verificationStatus'];
                                                <p>Sex: ".$sex."</p>
                                                <p>Registration Date: ".$regDate."</p>
                                                <p>Section: ".$section."</p>
-                                               <p>Email: ".$email."</p>
-                                               <p>Verification Code: ".$vCode."</p>
-                                               <p>Verification Status: ".$vStatus."</p>";
+                                               <p>Email: ".$email."</p>";
                                         ?>
                                     </div>
                                 </div>
@@ -190,13 +186,14 @@ $vStatus=$row['verificationStatus'];
                                          $markResult=mysqli_query($con,$markQuery) or die('Error to send query');
                                          if(mysqli_num_rows($markResult)!=0){
                                              $markRow=mysqli_fetch_assoc($markResult) or die('Error to fetch query');
-                                             $mark=$markRow['obtainedMark'];
+                                             $mark='none';
+                                             if($examRow['attendanceStatus']==='completed'){
+                                              $mark=$markRow['obtainedMark'];
+                                            }
                                          }
-                                         $status="none";
-                                         $mark="none";
-                                         if($examRow['examStatus']==='completed'){
-                                           $status=$examRow['attendanceStatus'];
-                                         }
+                                         $status=$examRow['attendanceStatus'];
+
+
                                          echo "<tr><td><a href='exam-detail.php?examId=".$examId."'>".$examRow['examTitle']."</a></td>
                                              <td><span>".$examRow['examStatus']."</span></td>
                                              <td><span class='tag tag-default'>".$status."</span></td>

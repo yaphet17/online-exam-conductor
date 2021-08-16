@@ -120,7 +120,9 @@ $status=$row['examStatus'];
                           </div>
                             <div class="card-body">
                                 <div class="timeline_item ">
-                                    <span><a href="javascript:void(0);"><?php echo $examTitle;?></a></span>
+                                    <span><a href="javascript:void(0);"><?php echo $examTitle;?></a>
+                                      <a href="exam-preview.php?examId='<?php echo $examId;?>'" class="float-right text-right btn btn-primary">Exam Preview</a>
+                                    </span>
                                     <div class="dropdown-divider"></div>
                                     <div class="msg">
                                       <?php

@@ -45,7 +45,7 @@ require('config.php');
                         $uName=stripcslashes($uName);
                         $pass=stripcslashes($pass);
 
-                        $query="SELECT candidateId,password,email,verificationStatus FROM candidate WHERE candidateId='".$uName."' LIMIT 1";
+                        $query="SELECT candidateId,password,email FROM candidate WHERE candidateId='".$uName."' LIMIT 1";
                         $result=mysqli_query($con,$query) or die("Error to send query");
                         $numRows=mysqli_num_rows($result);
                         if($numRows!=0){
@@ -54,11 +54,8 @@ require('config.php');
                               $_SESSION['uname']=$uName;
                               $_SESSION['pass']=$pass;
                               $_SESSION['level']="a8226c2";
-                              if($row['verificationStatus']==='unverified'){
-                                header('Location: verify-email.php');
-                              }else{
-                                header('Location: dashboard.php');
-                              }
+                              header('Location: dashboard.php');
+
                           }else{
                           echo "<p style='color:red;'><i class='fa fa-warning' style='font-size:20px;color:red;margin-right:5px;'></i>Invalid Password</p>";
                           }
