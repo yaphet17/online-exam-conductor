@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 07, 2021 at 03:42 PM
+-- Generation Time: Aug 21, 2021 at 04:38 PM
 -- Server version: 10.4.18-MariaDB
--- PHP Version: 8.0.3
+-- PHP Version: 7.1.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,7 +38,7 @@ CREATE TABLE `administrator` (
 --
 
 INSERT INTO `administrator` (`username`, `password`, `email`) VALUES
-('admin', '$2y$10$YhXNJ4kP9kQgIozyBzide.1lpOMHC2/uiELA2Qh7Rg34KA3zpAcHy', 'reciever@localhost');
+('admin', '$2y$10$hnoKHVNnYCtzHiri9YDACeK3WOwtpjoaXtpMUtMRS/.kEfH7.yzUW', 'reciever@localhost');
 
 -- --------------------------------------------------------
 
@@ -62,7 +62,7 @@ CREATE TABLE `answer` (
 --
 
 CREATE TABLE `candidate` (
-  `candidateId` varchar(12) NOT NULL,
+  `candidateId` varchar(25) NOT NULL,
   `password` varchar(256) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
@@ -70,20 +70,19 @@ CREATE TABLE `candidate` (
   `candidateImage` varchar(500) NOT NULL,
   `registrationDate` datetime NOT NULL,
   `sectionId` int(6) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `verificationCode` varchar(7) NOT NULL,
-  `verificationStatus` enum('verified','unverified','','') NOT NULL
+  `email` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `candidate`
 --
 
-INSERT INTO `candidate` (`candidateId`, `password`, `firstName`, `lastName`, `sex`, `candidateImage`, `registrationDate`, `sectionId`, `email`, `verificationCode`, `verificationStatus`) VALUES
-('ugr/17975/11', '$2y$10$Ltgm265WKR9h9WwLR18loePiDzLoi/bLeUGux97u./t9W4yXgX9Xu', 'Yafet', 'Abera', 'm', 'candidate-image/60e3f9bf544a58.58419377.jpg', '2021-07-06 08:35:43', 2, 'abushberhanu5@gmail.com', '2212a94', 'unverified'),
-('ugr/18884/11', '$2y$10$RuM4phE6hvP/1TrDZgzXJuRCEZu5vbZarOfVKiZRnjJoB.Q1calTu', 'Yared', 'fmmfu', 'm', 'candidate-image/60e2b1ae4c8d38.78159019.jpg', '2021-07-05 09:15:58', 1, 'reciever@localhost', '27e088f', 'unverified'),
-('yafet123', '$2y$10$wrs0mz/qeFwR4qLiGw7s/OD7WDBua1U0D5XihUGrjFnUWtGsgpWjC', 'Yafet', 'Assefa', 'm', 'candidate-image/60e586fc74b484.85959474.jpg', '2021-07-07 12:50:36', 2, 'yafetberhanu3@gmail.com', '1086ce7', 'unverified'),
-('yaredabate', '$2y$10$0PGqmYpsHkyNSCAx.tML/e/rGABG.xmwJiDJfrkNSJTnehnhs/fBi', 'yared', 'abate', 'm', 'candidate-image/60e5940ac2a092.79396867.jpg', '2021-07-07 01:46:18', 3, 'abushberhanu5@gmail.com', '125e1fa', 'unverified');
+INSERT INTO `candidate` (`candidateId`, `password`, `firstName`, `lastName`, `sex`, `candidateImage`, `registrationDate`, `sectionId`, `email`) VALUES
+('@chandler', '$2y$10$h4SHU9VzuibQeNFEZNSuDeK5RSzccpN5DUqYIxjrFwN74Ud9xttQq', 'Chandler', 'Bing', 'm', '../candidate-image/611954eecee888.17092311.jpg', '2021-08-15 07:54:55', 2, 'reciever@localhost'),
+('@joey', '$2y$10$sovWAl228EaQ7axpr3qVUOONhT0tp1XkX/HoJAGrDrz6Zge/TEn12', 'Joey', 'Tribbiani', 'm', '../candidate-image/6118cb2f835a81.42559988.jpg', '2021-08-15 10:07:11', 1, 'reciever@localhost'),
+('@monica', '$2y$10$FIBi7/DfkYVOLZilnxpXKeotg6oqlBZ7paU0hxszMOesm1oCSdRVe', 'Monica', 'Geller', 'f', '../candidate-image/6119558a5d7b61.66935625.jpg', '2021-08-15 07:57:30', 2, 'reciever@localhost'),
+('@rachel', '$2y$10$sdZi5S4yWSIOZRAlAIKU0.f6e8WXlD.aOmHsCU5lTLxFEwSES/2K2', 'Rachel', 'Green', 'f', '../candidate-image/611011f2d1f313.09417497.jpg', '2021-08-08 07:18:42', 1, 'reciever@localhost'),
+('@ross', '$2y$10$qjbJ7dwOY9xDaAEiVpxozeB7skiiRq6GgiS74RRezbt7NC6YBaB.C', 'Ross', 'Geller', 'm', '../candidate-image/6119555e5e41c4.01910396.jpg', '2021-08-15 07:56:46', 2, 'reciever@localhost');
 
 -- --------------------------------------------------------
 
@@ -98,18 +97,15 @@ CREATE TABLE `conductor` (
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `role` varchar(200) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `verificationCode` varchar(7) NOT NULL,
-  `verificationStatus` enum('verified','unverified','','') NOT NULL
+  `email` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `conductor`
 --
 
-INSERT INTO `conductor` (`username`, `password`, `prefix`, `firstName`, `lastName`, `role`, `email`, `verificationCode`, `verificationStatus`) VALUES
-('@Nemeraa', '123', 'Mr.', 'Yared', 'mmm', 'dfj', 'reciever@localhost', 'c5c9935', 'unverified'),
-('yafet123', '$2y$10$krRSj2c0xN0vl2zpumnrRuFGAdVhqIgqsu/yiukrblBqSNvt1vxuG', 'Mrs.', 'mmm', 'mmm', 'dfj', 'reciever@localhost', 'dca1092', 'unverified');
+INSERT INTO `conductor` (`username`, `password`, `prefix`, `firstName`, `lastName`, `role`, `email`) VALUES
+('@Yafet', '$2y$10$cxoCXU2p0.nnywsBdcerxOiazAhEPphsdlrnAnxZfkJuQiHDKH.62', 'Mr.', 'Yafet', 'Berhanu', 'Instructor', 'reciever@localhost');
 
 -- --------------------------------------------------------
 
@@ -121,19 +117,8 @@ CREATE TABLE `examenrollment` (
   `examEnrollmentId` int(6) NOT NULL,
   `candidateId` varchar(25) NOT NULL,
   `examId` int(6) NOT NULL,
-  `attendanceStatus` enum('attended','notattended','','') NOT NULL
+  `attendanceStatus` enum('attending','attended','notattended','dispelled','leaved') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `examenrollment`
---
-
-INSERT INTO `examenrollment` (`examEnrollmentId`, `candidateId`, `examId`, `attendanceStatus`) VALUES
-(6, 'ugr/18884/11', 1, 'notattended'),
-(7, 'ugr/17975/11', 1, 'notattended'),
-(8, 'ugr/17975/11', 1, 'notattended'),
-(9, 'yafet123', 1, 'notattended'),
-(10, 'yaredabate', 1, 'notattended');
 
 -- --------------------------------------------------------
 
@@ -145,6 +130,7 @@ CREATE TABLE `examination` (
   `examId` int(6) NOT NULL,
   `conductorId` varchar(25) NOT NULL,
   `examTitle` varchar(500) NOT NULL,
+  `examInstruction` varchar(1000) NOT NULL,
   `examCreationDate` datetime NOT NULL,
   `examDateTime` datetime NOT NULL,
   `examDuration` time NOT NULL,
@@ -152,15 +138,35 @@ CREATE TABLE `examination` (
   `marksPerRightAnswer` int(3) NOT NULL,
   `marksPerWrongAnswer` int(3) NOT NULL,
   `examCode` varchar(7) NOT NULL,
-  `examStatus` enum('created','started','completed','canceled') NOT NULL
+  `examStatus` enum('created','started','completed','canceled','suspended') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `examination`
+-- Table structure for table `examtoken`
 --
 
-INSERT INTO `examination` (`examId`, `conductorId`, `examTitle`, `examCreationDate`, `examDateTime`, `examDuration`, `totalQuestion`, `marksPerRightAnswer`, `marksPerWrongAnswer`, `examCode`, `examStatus`) VALUES
-(1, '@Nemeraa', 'exam 1', '2021-07-05 09:42:55', '2021-07-02 00:42:44', '02:00:00', 10, 1, 0, 'a3c664c', 'created');
+CREATE TABLE `examtoken` (
+  `id` int(6) NOT NULL,
+  `candidateId` varchar(25) NOT NULL,
+  `examId` int(6) NOT NULL,
+  `token` varchar(7) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mark`
+--
+
+CREATE TABLE `mark` (
+  `markId` int(6) NOT NULL,
+  `candidateId` varchar(25) NOT NULL,
+  `examId` int(6) NOT NULL,
+  `maximumMark` int(3) NOT NULL,
+  `obtainedMark` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -175,32 +181,6 @@ CREATE TABLE `option` (
   `optionTitle` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `option`
---
-
-INSERT INTO `option` (`optionId`, `questionId`, `optionNumber`, `optionTitle`) VALUES
-(26, 6, 1, 'aaaa'),
-(27, 6, 2, 'aa'),
-(28, 7, 1, 'aa'),
-(29, 7, 2, 'aa'),
-(30, 6, 1, 'aa'),
-(31, 6, 2, 'aa'),
-(32, 6, 1, 'aa'),
-(33, 6, 2, 'aa'),
-(34, 6, 1, 'aa'),
-(35, 6, 2, 'aa'),
-(36, 6, 1, 'aa'),
-(37, 6, 2, 'aa'),
-(38, 6, 1, 'aa'),
-(39, 6, 2, 'aa'),
-(40, 6, 1, 'aa'),
-(41, 6, 2, 'aa'),
-(42, 6, 1, 'aa'),
-(43, 6, 2, 'aa'),
-(44, 6, 1, 'aa'),
-(45, 6, 2, 'aa');
-
 -- --------------------------------------------------------
 
 --
@@ -213,22 +193,6 @@ CREATE TABLE `question` (
   `questionTitle` varchar(3000) NOT NULL,
   `answerOption` enum('option1','option2','option3','option4','option5') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `question`
---
-
-INSERT INTO `question` (`questionId`, `examId`, `questionTitle`, `answerOption`) VALUES
-(6, 1, 'aa', 'option1'),
-(7, 1, 'aaa', 'option1'),
-(8, 1, 'aa', 'option2'),
-(9, 1, 'aa', 'option1'),
-(10, 1, 'aa', 'option1'),
-(11, 1, 'aa', 'option2'),
-(12, 1, 'aa', 'option2'),
-(13, 1, 'aa', 'option2'),
-(14, 1, 'aa', 'option3'),
-(15, 1, 'aa', 'option4');
 
 -- --------------------------------------------------------
 
@@ -248,9 +212,11 @@ CREATE TABLE `section` (
 --
 
 INSERT INTO `section` (`sectionId`, `sectionName`, `academicYear`, `department`) VALUES
-(1, 'section 1', 1, 'Pre-Engineering'),
-(2, 'section 2', 1, 'Pre-Engineering'),
-(3, 'section 1', 2, 'Electrical school');
+(1, 'Section 1', 1, 'Pre-Engineering'),
+(2, 'Section 2', 1, 'Pre-Engineering'),
+(3, 'Section 3', 1, 'Pre-Engineering'),
+(4, 'Section 4', 1, 'Pre-Engineering'),
+(5, 'Section 1', 2, 'Electrical school');
 
 --
 -- Indexes for dumped tables
@@ -300,6 +266,22 @@ ALTER TABLE `examination`
   ADD KEY `examination_ibfk_1` (`conductorId`);
 
 --
+-- Indexes for table `examtoken`
+--
+ALTER TABLE `examtoken`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `candidateId` (`candidateId`),
+  ADD KEY `examId` (`examId`);
+
+--
+-- Indexes for table `mark`
+--
+ALTER TABLE `mark`
+  ADD PRIMARY KEY (`markId`),
+  ADD KEY `examId` (`examId`),
+  ADD KEY `candidateId` (`candidateId`);
+
+--
 -- Indexes for table `option`
 --
 ALTER TABLE `option`
@@ -327,37 +309,49 @@ ALTER TABLE `section`
 -- AUTO_INCREMENT for table `answer`
 --
 ALTER TABLE `answer`
-  MODIFY `answerId` int(6) NOT NULL AUTO_INCREMENT;
+  MODIFY `answerId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `examenrollment`
 --
 ALTER TABLE `examenrollment`
-  MODIFY `examEnrollmentId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `examEnrollmentId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `examination`
 --
 ALTER TABLE `examination`
-  MODIFY `examId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `examId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `examtoken`
+--
+ALTER TABLE `examtoken`
+  MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `mark`
+--
+ALTER TABLE `mark`
+  MODIFY `markId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `option`
 --
 ALTER TABLE `option`
-  MODIFY `optionId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `optionId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=144;
 
 --
 -- AUTO_INCREMENT for table `question`
 --
 ALTER TABLE `question`
-  MODIFY `questionId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `questionId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `sectionId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `sectionId` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
@@ -367,7 +361,7 @@ ALTER TABLE `section`
 -- Constraints for table `answer`
 --
 ALTER TABLE `answer`
-  ADD CONSTRAINT `answer_ibfk_2` FOREIGN KEY (`candidateId`) REFERENCES `candidate` (`candidateId`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `answer_ibfk_2` FOREIGN KEY (`candidateId`) REFERENCES `candidate` (`candidateId`) ON DELETE CASCADE,
   ADD CONSTRAINT `answer_ibfk_3` FOREIGN KEY (`examId`) REFERENCES `examination` (`examId`) ON DELETE CASCADE,
   ADD CONSTRAINT `answer_ibfk_4` FOREIGN KEY (`questionId`) REFERENCES `question` (`questionId`) ON DELETE CASCADE;
 
@@ -381,7 +375,7 @@ ALTER TABLE `candidate`
 -- Constraints for table `examenrollment`
 --
 ALTER TABLE `examenrollment`
-  ADD CONSTRAINT `examenrollment_ibfk_1` FOREIGN KEY (`candidateId`) REFERENCES `candidate` (`candidateId`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `examenrollment_ibfk_1` FOREIGN KEY (`candidateId`) REFERENCES `candidate` (`candidateId`) ON DELETE CASCADE,
   ADD CONSTRAINT `examenrollment_ibfk_2` FOREIGN KEY (`examId`) REFERENCES `examination` (`examId`) ON DELETE CASCADE;
 
 --
@@ -389,6 +383,20 @@ ALTER TABLE `examenrollment`
 --
 ALTER TABLE `examination`
   ADD CONSTRAINT `examination_ibfk_1` FOREIGN KEY (`conductorId`) REFERENCES `conductor` (`username`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `examtoken`
+--
+ALTER TABLE `examtoken`
+  ADD CONSTRAINT `examtoken_ibfk_1` FOREIGN KEY (`candidateId`) REFERENCES `candidate` (`candidateId`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `examtoken_ibfk_2` FOREIGN KEY (`examId`) REFERENCES `examination` (`examId`) ON DELETE NO ACTION;
+
+--
+-- Constraints for table `mark`
+--
+ALTER TABLE `mark`
+  ADD CONSTRAINT `mark_ibfk_1` FOREIGN KEY (`examId`) REFERENCES `examination` (`examId`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `mark_ibfk_2` FOREIGN KEY (`candidateId`) REFERENCES `candidate` (`candidateId`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `option`
